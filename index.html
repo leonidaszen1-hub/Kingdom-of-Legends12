@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b13">
+  <meta name="description" content="Kingdom of Legends — explore kings, leaders, scientists, historic places, quotes and world history.">
+  <title>Kingdom of Legends</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="#home" class="brand">
+      <span class="brand-icon">♛</span>
+      <span>KINGDOM <b>OF LEGENDS</b></span>
+    </a>
+    <button id="menuToggle" class="menu-toggle" aria-label="Open menu">☰</button>
+    <nav id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#explore">Explore</a>
+      <a href="#quotes">Quotes</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">HISTORY • KNOWLEDGE • LEGACY</span>
+        <h1>Discover the <span>Legends</span><br>Who Shaped Our World</h1>
+        <p>Explore remarkable rulers, visionary leaders, brilliant scientists,
+          historic places, powerful words and unforgettable events.</p>
+        <a href="#explore" class="primary-btn">Explore the Kingdom <span>→</span></a>
+      </div>
+      <div class="hero-emblem" aria-hidden="true">♛</div>
+      <div class="hero-bottom">LEARN FROM THE PAST. UNDERSTAND THE PRESENT.</div>
+    </section>
+
+    <section class="stats-section">
+      <div class="stat"><strong id="totalCount">680</strong><span>COLLECTION ITEMS</span></div>
+      <div class="stat"><strong>6</strong><span>HISTORY CATEGORIES</span></div>
+      <div class="stat"><strong>∞</strong><span>THINGS TO DISCOVER</span></div>
+    </section>
+
+    <section id="explore" class="content-section">
+      <div class="section-heading">
+        <span class="eyebrow">THE ARCHIVES</span>
+        <h2>Explore the <span>Kingdom</span></h2>
+        <p>Choose a collection and uncover stories worth remembering.</p>
+      </div>
+
+      <div id="categoryGrid" class="category-grid">
+        <button class="category-card active" data-category="kings">
+          <span class="category-icon">👑</span><span class="category-name">Kings</span>
+          <span class="category-count">100 entries</span>
+        </button>
+        <button class="category-card" data-category="leaders">
+          <span class="category-icon">🛡️</span><span class="category-name">Leaders</span>
+          <span class="category-count">80 entries</span>
+        </button>
+        <button class="category-card" data-category="scientists">
+          <span class="category-icon">🔬</span><span class="category-name">Scientists</span>
+          <span class="category-count">50 entries</span>
+        </button>
+        <button class="category-card" data-category="places">
+          <span class="category-icon">🏛️</span><span class="category-name">Historic Places</span>
+          <span class="category-count">100 entries</span>
+        </button>
+        <button class="category-card" data-category="quotes">
+          <span class="category-icon">💬</span><span class="category-name">Quotes</span>
+          <span class="category-count">250 entries</span>
+        </button>
+        <button class="category-card" data-category="events">
+          <span class="category-icon">📜</span><span class="category-name">Historical Events</span>
+          <span class="category-count">100 entries</span>
+        </button>
+      </div>
+
+      <div class="library-heading">
+        <div>
+          <span class="eyebrow">THE COLLECTION</span>
+          <h2 id="collectionTitle">👑 Kings</h2>
+          <p id="collectionDescription">Discover rulers who left their mark on history.</p>
+        </div>
+        <span id="resultCount" class="result-count">Loading...</span>
+      </div>
+
+      <div class="filters">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search names, places, dates..." autocomplete="off">
+        </label>
+        <select id="sortSelect" aria-label="Sort entries">
+          <option value="default">Default order</option>
+          <option value="az">Name: A–Z</option>
+          <option value="za">Name: Z–A</option>
+        </select>
+      </div>
+
+      <div id="cardsGrid" class="cards-grid" aria-live="polite"></div>
+      <div id="pagination" class="pagination"></div>
+    </section>
+
+    <section id="quotes" class="quote-feature">
+      <span class="eyebrow">WORDS THAT ENDURE</span>
+      <h2>A thought can change a <span>world.</span></h2>
+      <p>Explore the Quotes collection for ideas, wisdom and inspiration.</p>
+      <button id="quotesButton" class="primary-btn">Explore Quotes →</button>
+    </section>
+
+    <section id="about" class="about-section">
+      <span class="eyebrow">OUR MISSION</span>
+      <h2>Preserving the Stories of <span>Humanity</span></h2>
+      <p>Kingdom of Legends is a history-focused digital collection created to
+        make the people, places, ideas and events that shaped our world easier to explore.</p>
+    </section>
+  </main>
+
+  <footer>
+    <a href="#home" class="footer-brand">♛ KINGDOM OF LEGENDS</a>
+    <p>History lives on through the stories we share.</p>
+    <span>© <span id="year"></span> Kingdom of Legends</span>
+  </footer>
+
+  <dialog id="detailDialog" class="detail-dialog">
+    <button id="closeDialog" class="close-dialog" aria-label="Close">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <button id="backToTop" aria-label="Back to top">↑</button>
+</body>
+</html>
