@@ -344,3 +344,93 @@ footer {
     transition: none !important;
   }
 }
+
+.content-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 10px 16px;
+  align-items: center;
+  max-width: 750px;
+  margin: 24px 0;
+}
+
+.content-controls label {
+  color: var(--muted);
+}
+
+.content-controls input,
+.content-controls select {
+  min-width: 0;
+}
+
+.pagination,
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px 0;
+}
+
+.pagination button,
+.secondary-button {
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled),
+.secondary-button:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.pagination button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.card-actions .primary-button {
+  margin-top: 0;
+}
+
+.detail-dialog {
+  width: min(650px, calc(100% - 28px));
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px;
+  border: 1px solid var(--gold);
+  border-radius: 18px;
+  color: var(--text);
+  background: var(--panel);
+}
+
+.detail-dialog::backdrop {
+  background: rgba(0, 0, 0, .8);
+  backdrop-filter: blur(5px);
+}
+
+.dialog-close {
+  float: right;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--gold);
+  background: transparent;
+  cursor: pointer;
+}
+
+.detail-dialog h2 {
+  color: var(--gold);
+}
+
+@media (max-width: 560px) {
+  .content-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
