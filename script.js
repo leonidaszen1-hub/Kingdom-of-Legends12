@@ -1,983 +1,916 @@
 
 "use strict";
 
-/*
- * KINGDOM OF LEGENDS
- * Initial working dataset.
- * These are starter examples, not the complete 680-entry collection.
- */
+/* =========================================================
+   KINGDOM OF LEGENDS
+   Search, filters, pagination, stories, quotes and languages
+   ========================================================= */
 
 const PAGE_SIZE = 9;
 
+const GOALS = {
+  kings: 100,
+  leaders: 80,
+  scientists: 50,
+  places: 100,
+  quotes: 250,
+  events: 100
+};
+
 const CATEGORY_INFO = {
   kings: {
-    label: "Kings",
     icon: "👑",
-    target: 100,
+    title: "Kings",
     description: "Monarchs who shaped kingdoms and empires."
   },
   leaders: {
-    label: "Leaders",
     icon: "🛡️",
-    target: 80,
+    title: "Leaders",
     description: "Leaders who influenced nations and people."
   },
   scientists: {
-    label: "Scientists",
     icon: "🔬",
-    target: 50,
+    title: "Scientists",
     description: "Discoveries that changed our understanding."
   },
   places: {
-    label: "Historical Places",
     icon: "🏛️",
-    target: 100,
+    title: "Places",
     description: "Places that preserve the memory of history."
   },
   quotes: {
-    label: "Quotes",
     icon: "💬",
-    target: 250,
+    title: "Quotes",
     description: "Funny and motivational words to remember."
   },
   events: {
-    label: "Historical Events",
     icon: "📜",
-    target: 100,
+    title: "Events",
     description: "Events that changed the course of history."
   }
 };
 
-const DATA = [
+/*
+  IMPORTANT:
+  These are starter records, not the complete collection of 680.
+  Add researched records to this array to expand the library.
+  Do not use invented biographical facts as historical facts.
+*/
+
+const entries = [
+  // KINGS
   {
     id: "king-mansa-musa",
     category: "kings",
-    title: "Mansa Musa",
-    meta: "c. 1280–c. 1337 · Mali Empire · Africa",
-    icon: "👑",
+    name: "Mansa Musa",
+    period: "c. 1280 – c. 1337",
     region: "Africa",
-    summary: "The celebrated ruler of the Mali Empire, remembered for his pilgrimage to Mecca and the wealth and learning associated with his reign.",
-    details: [
-      ["Early life and rise", "Mansa Musa became ruler of the Mali Empire in the early 14th century. Details of his childhood and the circumstances of his accession are limited in surviving sources."],
-      ["Achievements", "His reign is associated with the expansion and consolidation of Mali, trans-Saharan trade, and the growth of Islamic scholarship. Timbuktu became an important center of learning over time."],
-      ["The pilgrimage", "In 1324, Musa traveled to Mecca with a large entourage. Accounts of his generosity became famous across parts of North Africa and the Middle East."],
-      ["Death and legacy", "The exact year of his death is uncertain. He is remembered as one of the best-known rulers of medieval West Africa."]
+    icon: "👑",
+    summary: "The famous ruler of the Mali Empire, remembered for his immense wealth and pilgrimage to Mecca.",
+    details: "Mansa Musa ruled the Mali Empire in West Africa during the 14th century. His pilgrimage to Mecca in 1324 brought international attention to the wealth and influence of his empire. He is also associated with the growth of scholarship and architecture in Timbuktu.",
+    facts: [
+      "Ruled the Mali Empire in West Africa.",
+      "Made a famous pilgrimage to Mecca in 1324.",
+      "Supported learning and Islamic scholarship."
     ]
   },
   {
     id: "king-ramesses-ii",
     category: "kings",
-    title: "Ramesses II",
-    meta: "c. 1303–1213 BCE · Ancient Egypt",
-    icon: "👑",
+    name: "Ramesses II",
+    period: "c. 1303–1213 BCE",
     region: "Africa",
-    summary: "One of ancient Egypt's most prominent pharaohs, known for monumental building projects and the Battle of Kadesh.",
-    details: [
-      ["Early life", "Ramesses II was the son of Pharaoh Seti I and became pharaoh around 1279 BCE."],
-      ["Reign and building", "He commissioned temples, statues, and monuments, including major works at Abu Simbel and additions at Karnak and Luxor."],
-      ["Battle and diplomacy", "The Battle of Kadesh against the Hittites is usually dated to around 1274 BCE. The conflict was followed years later by a surviving peace treaty."],
-      ["Death and legacy", "He died after a long reign and was buried in the Valley of the Kings. His monuments and inscriptions made his name enduring."]
+    icon: "🏺",
+    summary: "An Egyptian pharaoh known for monumental building projects and the Battle of Kadesh.",
+    details: "Ramesses II ruled ancient Egypt for approximately 66 years. His reign is remembered for temples, statues, and monuments, including major works at Abu Simbel. He fought the Hittites at Kadesh and later became associated with one of the earliest surviving peace treaties.",
+    facts: [
+      "Ruled during Egypt's New Kingdom.",
+      "Expanded monumental architecture.",
+      "His reign lasted around six decades."
+    ]
+  },
+  {
+    id: "king-ashoka",
+    category: "kings",
+    name: "Ashoka the Great",
+    period: "c. 304–232 BCE",
+    region: "Asia",
+    icon: "🪷",
+    summary: "An Indian emperor who promoted Buddhist teachings after the devastating Kalinga War.",
+    details: "Ashoka ruled much of the Indian subcontinent as an emperor of the Maurya dynasty. After the Kalinga War, he promoted a policy often described through the ideas of dhamma, ethical conduct, and concern for living beings. His inscriptions remain important historical sources.",
+    facts: [
+      "Belonged to the Maurya dynasty.",
+      "Issued inscriptions across his empire.",
+      "Supported the spread of Buddhism."
     ]
   },
   {
     id: "king-cleopatra",
     category: "kings",
-    title: "Cleopatra VII",
-    meta: "69–30 BCE · Ptolemaic Egypt",
-    icon: "👑",
+    name: "Cleopatra VII",
+    period: "69–30 BCE",
     region: "Africa",
-    summary: "The last active ruler of the Ptolemaic Kingdom of Egypt, known for her political strategy and relationships with Roman leaders.",
-    details: [
-      ["Background", "Cleopatra VII belonged to the Ptolemaic dynasty, which descended from one of Alexander the Great's generals. She ruled with periods of conflict and co-rule."],
-      ["Politics", "She worked with Julius Caesar and later Mark Antony to protect her kingdom amid Roman civil wars."],
-      ["Final conflict", "After Antony and Cleopatra were defeated by Octavian's forces at Actium in 31 BCE, Roman forces entered Egypt."],
-      ["Death and legacy", "Cleopatra died in 30 BCE. The exact circumstances of her death remain debated. Egypt then came under Roman rule."]
-    ]
-  },
-  {
-    id: "king-aksum-ezana",
-    category: "kings",
-    title: "King Ezana",
-    meta: "4th century CE · Kingdom of Aksum · Ethiopia",
-    icon: "👑",
-    region: "Africa",
-    summary: "An important Aksumite king associated with the adoption of Christianity by the royal court.",
-    details: [
-      ["Kingdom of Aksum", "Aksum was a powerful trading kingdom in the Horn of Africa, connected to Red Sea and wider international trade networks."],
-      ["Christianity", "In Ezana's reign, the royal court adopted Christianity. Inscriptions from his reign reflect a change in religious language and symbols."],
-      ["Power and trade", "Aksum issued coins and used monumental inscriptions to express royal authority. Its trade connected Africa, Arabia, and the Mediterranean."],
-      ["Legacy", "Ezana is a major figure in Ethiopian history. The precise chronology of his reign is reconstructed from inscriptions and other evidence."]
+    icon: "🐍",
+    summary: "The last active ruler of Ptolemaic Egypt, known for her political alliances with Rome.",
+    details: "Cleopatra VII ruled Egypt during a period of intense Roman expansion. She formed political and personal alliances with Julius Caesar and Mark Antony. After her defeat alongside Antony by Octavian's forces, she died in 30 BCE and Egypt became a Roman province.",
+    facts: [
+      "Ruled Ptolemaic Egypt.",
+      "Was a member of a Macedonian Greek dynasty.",
+      "Egypt came under Roman control after her death."
     ]
   },
   {
     id: "king-menelik-ii",
     category: "kings",
-    title: "Menelik II",
-    meta: "1844–1913 · Ethiopia",
-    icon: "👑",
-    region: "Africa",
-    summary: "Emperor of Ethiopia, associated with state expansion, modernization efforts, and the Ethiopian victory at Adwa.",
-    details: [
-      ["Rise to power", "Menelik became King of Shewa and later Emperor of Ethiopia in 1889."],
-      ["Battle of Adwa", "In 1896, Ethiopian forces defeated an invading Italian army at Adwa. Empress Taytu Betul and many commanders and communities played important roles."],
-      ["Modernization", "During his reign, Ethiopia expanded telegraph and rail projects and introduced other state institutions and technologies, though changes were uneven."],
-      ["Legacy", "Menelik II remains a significant and debated historical figure. His reign also involved territorial expansion and conflict."]
+    name: "Menelik II",
+    period: "1844–1913",
+    region: "Ethiopia",
+    icon: "🇪🇹",
+    summary: "Ethiopian emperor associated with the victory at Adwa and major state modernization.",
+    details: "Menelik II became emperor of Ethiopia in 1889. During his reign, Ethiopian forces defeated an Italian invasion at the Battle of Adwa in 1896, preserving the country's independence. His period also saw the expansion of Addis Ababa and the introduction of new infrastructure and technologies.",
+    facts: [
+      "Became emperor in 1889.",
+      "Ethiopian forces won at Adwa in 1896.",
+      "Helped expand modern state institutions."
     ]
   },
 
+  // LEADERS
   {
     id: "leader-nelson-mandela",
     category: "leaders",
-    title: "Nelson Mandela",
-    meta: "1918–2013 · South Africa",
-    icon: "🛡️",
+    name: "Nelson Mandela",
+    period: "1918–2013",
     region: "Africa",
-    summary: "Anti-apartheid leader who became South Africa's first Black president elected in a fully representative democratic election.",
-    details: [
-      ["Early life", "Mandela studied law and became involved in opposition to apartheid, the system of racial segregation and white minority rule."],
-      ["Imprisonment", "He spent 27 years in prison, much of that time on Robben Island, for his role in the anti-apartheid struggle."],
-      ["Presidency", "Released in 1990, he helped negotiate a transition to democracy and was elected president in 1994."],
-      ["Legacy", "Mandela became an international symbol of resistance, negotiation, and reconciliation, although South Africa continued to face deep inequality."]
-    ]
-  },
-  {
-    id: "leader-taytu-betul",
-    category: "leaders",
-    title: "Empress Taytu Betul",
-    meta: "c. 1851–1918 · Ethiopia",
-    icon: "🛡️",
-    region: "Africa",
-    summary: "Ethiopian empress and political figure who played a notable role during the period of the Battle of Adwa.",
-    details: [
-      ["Political role", "Taytu Betul was the wife of Emperor Menelik II and an influential figure in the Ethiopian imperial court."],
-      ["Adwa", "During the 1896 conflict with Italy, she supported the Ethiopian war effort and was present with the imperial forces."],
-      ["Addis Ababa", "She is associated with the early development of Addis Ababa as Ethiopia's capital."],
-      ["Legacy", "Taytu is remembered for political influence and opposition to Italian colonial ambitions. Accounts of particular events vary by source."]
-    ]
-  },
-  {
-    id: "leader-martin-luther-king",
-    category: "leaders",
-    title: "Martin Luther King Jr.",
-    meta: "1929–1968 · United States",
-    icon: "🛡️",
-    region: "Americas",
-    summary: "Baptist minister and civil rights leader who advocated nonviolent resistance to racial segregation.",
-    details: [
-      ["Leadership", "King became a prominent leader in the US civil rights movement, including the Montgomery bus boycott."],
-      ["Nonviolent protest", "He supported marches, boycotts, and civil disobedience to challenge segregation and discrimination."],
-      ["Major achievements", "The movement helped build public pressure for the Civil Rights Act of 1964 and the Voting Rights Act of 1965."],
-      ["Legacy", "King was assassinated in 1968. His work remains influential in civil rights movements worldwide."]
+    icon: "🕊️",
+    summary: "South African anti-apartheid leader who became the country's first Black president.",
+    details: "Nelson Mandela was a central figure in the struggle against apartheid in South Africa. After spending 27 years in prison, he was released in 1990. In 1994, he became South Africa's first Black president in the country's first fully democratic national election.",
+    facts: [
+      "Received the Nobel Peace Prize in 1993 with F. W. de Klerk.",
+      "Became president in 1994.",
+      "Promoted reconciliation after apartheid."
     ]
   },
   {
     id: "leader-wangari-maathai",
     category: "leaders",
-    title: "Wangari Maathai",
-    meta: "1940–2011 · Kenya",
-    icon: "🛡️",
+    name: "Wangari Maathai",
+    period: "1940–2011",
     region: "Africa",
-    summary: "Environmental activist and founder of the Green Belt Movement, awarded the Nobel Peace Prize in 2004.",
-    details: [
-      ["Education", "Maathai became a biologist and was the first woman in East and Central Africa to earn a doctorate."],
-      ["Green Belt Movement", "Founded in 1977, the movement supported tree planting, environmental protection, and community participation, especially by women."],
-      ["Public service", "She served in Kenya's parliament and continued to campaign for environmental protection and democratic rights."],
-      ["Legacy", "She received the Nobel Peace Prize in 2004 for contributions to sustainable development, democracy, and peace."]
+    icon: "🌳",
+    summary: "Kenyan environmentalist and women's rights advocate who founded the Green Belt Movement.",
+    details: "Wangari Maathai founded the Green Belt Movement in Kenya in 1977. The organization encouraged tree planting, environmental conservation, and community participation, especially among women. In 2004, she became the first African woman to receive the Nobel Peace Prize.",
+    facts: [
+      "Founded the Green Belt Movement.",
+      "Won the 2004 Nobel Peace Prize.",
+      "Advocated environmental protection and democracy."
+    ]
+  },
+  {
+    id: "leader-martin-luther-king",
+    category: "leaders",
+    name: "Martin Luther King Jr.",
+    period: "1929–1968",
+    region: "Americas",
+    icon: "✊",
+    summary: "American civil rights leader known for advocating nonviolent resistance.",
+    details: "Martin Luther King Jr. was a Baptist minister and leading voice in the American civil rights movement. He advocated nonviolent protest against racial segregation and discrimination. His leadership contributed to the momentum behind major civil rights legislation in the United States.",
+    facts: [
+      "Delivered the famous 'I Have a Dream' speech in 1963.",
+      "Received the Nobel Peace Prize in 1964.",
+      "Advocated nonviolent civil rights activism."
+    ]
+  },
+  {
+    id: "leader-emperor-haile-selassie",
+    category: "leaders",
+    name: "Haile Selassie",
+    period: "1892–1975",
+    region: "Ethiopia",
+    icon: "🇪🇹",
+    summary: "Ethiopian emperor who became an important voice in African and international diplomacy.",
+    details: "Haile Selassie served as emperor of Ethiopia from 1930 to 1974, apart from the period of Italian occupation. He appealed to the League of Nations after Italy invaded Ethiopia in 1935 and later supported African cooperation. The Organization of African Unity was founded in Addis Ababa in 1963.",
+    facts: [
+      "Addressed the League of Nations in 1936.",
+      "Hosted the founding of the OAU in Addis Ababa.",
+      "His rule ended in 1974."
     ]
   },
 
+  // SCIENTISTS
   {
     id: "scientist-marie-curie",
     category: "scientists",
-    title: "Marie Curie",
-    meta: "1867–1934 · Physics and Chemistry",
-    icon: "🔬",
+    name: "Marie Curie",
+    period: "1867–1934",
     region: "Europe",
-    summary: "Pioneering scientist whose research on radioactivity led to Nobel Prizes in two scientific fields.",
-    details: [
-      ["Early life", "Born Maria Skłodowska in Warsaw, she moved to Paris to study at the Sorbonne."],
-      ["Research", "Working with Pierre Curie and other collaborators, she investigated radioactivity and helped identify polonium and radium."],
-      ["Awards", "She received the 1903 Nobel Prize in Physics and the 1911 Nobel Prize in Chemistry."],
-      ["Legacy", "Her scientific work transformed physics and chemistry. She died in 1934 from aplastic anemia, associated with prolonged radiation exposure."]
-    ]
-  },
-  {
-    id: "scientist-isaac-newton",
-    category: "scientists",
-    title: "Isaac Newton",
-    meta: "1643–1727 · Physics and Mathematics",
-    icon: "🔬",
-    region: "Europe",
-    summary: "Physicist and mathematician whose work helped establish classical mechanics and laws of motion.",
-    details: [
-      ["Scientific work", "Newton developed major ideas in calculus, optics, and mechanics. Some mathematical ideas were developed independently by other scholars, including Leibniz."],
-      ["Principia", "His 1687 book described laws of motion and universal gravitation."],
-      ["Optics", "He investigated light and color and built an influential reflecting telescope."],
-      ["Legacy", "Newton's work shaped science for centuries, though later physics revised some of its limits."]
+    field: "Physics and Chemistry",
+    icon: "⚛️",
+    summary: "Pioneering researcher in radioactivity and the first woman to win a Nobel Prize.",
+    details: "Marie Curie conducted groundbreaking research into radioactivity with Pierre Curie and other colleagues. She discovered the elements polonium and radium with Pierre Curie. She won the Nobel Prize in Physics in 1903 and the Nobel Prize in Chemistry in 1911.",
+    facts: [
+      "Won Nobel Prizes in two scientific fields.",
+      "Advanced research into radioactivity.",
+      "Helped develop mobile X-ray services during World War I."
     ]
   },
   {
     id: "scientist-albert-einstein",
     category: "scientists",
-    title: "Albert Einstein",
-    meta: "1879–1955 · Theoretical Physics",
-    icon: "🔬",
+    name: "Albert Einstein",
+    period: "1879–1955",
     region: "Europe",
-    summary: "Physicist whose theories of relativity transformed modern understanding of space, time, gravity, and energy.",
-    details: [
-      ["Early career", "Einstein published several influential papers in 1905, including work on the photoelectric effect and special relativity."],
-      ["Relativity", "General relativity, published in 1915, described gravity as the curvature of spacetime."],
-      ["Nobel Prize", "He received the 1921 Nobel Prize in Physics for his explanation of the photoelectric effect, not specifically for relativity."],
-      ["Legacy", "Einstein became one of the best-known scientists of the modern era and spoke publicly about peace and social issues."]
+    field: "Physics",
+    icon: "🧠",
+    summary: "Theoretical physicist known for relativity and contributions to modern physics.",
+    details: "Albert Einstein developed the special theory of relativity in 1905 and the general theory of relativity in 1915. His work transformed the understanding of space, time, gravity, and energy. He received the 1921 Nobel Prize in Physics for his explanation of the photoelectric effect.",
+    facts: [
+      "Published the special theory of relativity in 1905.",
+      "Received the 1921 Nobel Prize in Physics.",
+      "Made foundational contributions to theoretical physics."
     ]
   },
   {
-    id: "scientist-katherine-johnson",
+    id: "scientist-ibn-al-haytham",
     category: "scientists",
-    title: "Katherine Johnson",
-    meta: "1918–2020 · Mathematics and Spaceflight",
-    icon: "🔬",
+    name: "Ibn al-Haytham",
+    period: "c. 965 – c. 1040",
+    region: "Middle East",
+    field: "Optics",
+    icon: "🔭",
+    summary: "Scientist and mathematician whose work transformed the study of vision and light.",
+    details: "Ibn al-Haytham, also known in Latin as Alhazen, wrote extensively on optics, mathematics, and scientific investigation. His Book of Optics examined vision and the behavior of light. His careful use of observation and experimentation influenced later scholars.",
+    facts: [
+      "Wrote the influential Book of Optics.",
+      "Studied vision and light.",
+      "Contributed to mathematics and scientific methodology."
+    ]
+  },
+  {
+    id: "scientist-george-washington-carver",
+    category: "scientists",
+    name: "George Washington Carver",
+    period: "c. 1864–1943",
     region: "Americas",
-    summary: "Mathematician whose calculations helped support early US crewed space missions.",
-    details: [
-      ["Career", "Johnson worked at the organization that became NASA, contributing mathematical calculations for flight trajectories."],
-      ["Space missions", "Her work supported the 1961 flight of Alan Shepard and the 1962 orbital mission of John Glenn, among others."],
-      ["Breaking barriers", "She worked through a period of racial segregation and gender discrimination in American institutions."],
-      ["Recognition", "Johnson received the Presidential Medal of Freedom in 2015. Her career gained wider recognition through books and film."]
+    field: "Agriculture and Botany",
+    icon: "🌱",
+    summary: "American agricultural scientist who promoted soil conservation and crop diversification.",
+    details: "George Washington Carver researched agricultural methods and encouraged farmers to diversify crops and improve soil health. He promoted peanuts, sweet potatoes, and other crops as alternatives to continuous cotton cultivation. His educational work supported sustainable farming practices.",
+    facts: [
+      "Taught and researched at Tuskegee Institute.",
+      "Promoted crop rotation and soil conservation.",
+      "Worked to improve agricultural opportunities for farmers."
     ]
   },
 
+  // HISTORICAL PLACES
   {
     id: "place-lalibela",
     category: "places",
-    title: "Rock-Hewn Churches of Lalibela",
-    meta: "Medieval period · Amhara, Ethiopia",
-    icon: "🏛️",
-    region: "Africa",
-    summary: "A group of remarkable churches carved from rock, forming an important Ethiopian Orthodox Christian pilgrimage site.",
-    details: [
-      ["Construction", "The churches were carved from living rock over time, mainly during the medieval period. Their exact construction histories differ and remain subjects of research."],
-      ["Purpose", "They serve religious, liturgical, and pilgrimage purposes and are central to Ethiopian Orthodox Christian tradition."],
-      ["Architecture", "The complex includes trenches, tunnels, courtyards, and monolithic or semi-monolithic churches."],
-      ["Preservation", "Lalibela is a UNESCO World Heritage Site. Conservation must balance protecting the structures with continued religious use."]
+    name: "Rock-Hewn Churches of Lalibela",
+    period: "Mainly 12th–13th centuries",
+    region: "Ethiopia",
+    icon: "⛪",
+    summary: "A remarkable complex of churches carved directly into rock in the Ethiopian highlands.",
+    details: "Lalibela is famous for its group of medieval rock-hewn churches, carved from living rock. The site remains an important pilgrimage destination for Ethiopian Orthodox Christians and is recognized as a UNESCO World Heritage Site.",
+    facts: [
+      "Located in northern Ethiopia.",
+      "Recognized as a UNESCO World Heritage Site.",
+      "Still used for religious worship and pilgrimage."
     ]
   },
   {
-    id: "place-axum",
+    id: "place-aksum",
     category: "places",
-    title: "Aksum Archaeological Site",
-    meta: "Ancient and medieval periods · Tigray, Ethiopia",
-    icon: "🏛️",
-    region: "Africa",
-    summary: "The remains of the ancient Aksumite civilization, including monumental stelae and archaeological remains.",
-    details: [
-      ["Ancient kingdom", "Aksum was a major political and commercial center connecting the Horn of Africa with Red Sea trade."],
-      ["Monuments", "The site includes large carved stone stelae, tombs, and remains of palaces and other structures."],
-      ["Religion and writing", "Aksumite inscriptions and coins provide evidence of political history, trade, and the adoption of Christianity."],
-      ["Importance", "Aksum is a UNESCO World Heritage Site and an important place in Ethiopian historical and religious memory."]
+    name: "Aksum",
+    period: "Ancient to medieval period",
+    region: "Ethiopia",
+    icon: "🗿",
+    summary: "The center of an influential ancient kingdom in the Horn of Africa.",
+    details: "Aksum was the center of a powerful kingdom that developed extensive trading connections across the Red Sea. The site is known for its monumental stelae, archaeological remains, and connections to the early history of Christianity in Ethiopia.",
+    facts: [
+      "Located in northern Ethiopia.",
+      "Famous for its monumental stelae.",
+      "Associated with an important ancient trading kingdom."
     ]
   },
   {
-    id: "place-pyramids",
+    id: "place-pyramids-giza",
     category: "places",
-    title: "Pyramids of Giza",
-    meta: "c. 26th–25th centuries BCE · Egypt",
-    icon: "🏛️",
-    region: "Africa",
-    summary: "Monumental royal tombs built during Egypt's Old Kingdom, including the Great Pyramid of Khufu.",
-    details: [
-      ["Who built them?", "Ancient Egyptian workers, craftspeople, planners, and laborers constructed the pyramids under royal authority. Archaeology shows organized workforces rather than supporting the old myth that enslaved people alone built them."],
-      ["Purpose", "The pyramids served as royal tombs and parts of larger funerary complexes connected with Egyptian beliefs about kingship and the afterlife."],
-      ["Construction", "Builders quarried, transported, and positioned huge stone blocks using sophisticated organization and engineering. Details of some construction methods remain debated."],
-      ["Legacy", "The Giza pyramids are among the most famous surviving monuments of ancient Egypt."]
+    name: "Pyramids of Giza",
+    period: "c. 26th century BCE",
+    region: "Egypt",
+    icon: "🔺",
+    summary: "Monumental ancient Egyptian pyramids built as royal tombs.",
+    details: "The Giza pyramid complex includes the pyramids associated with Khufu, Khafre, and Menkaure. The Great Pyramid of Khufu is the only surviving structure of the traditional Seven Wonders of the Ancient World.",
+    facts: [
+      "Located near modern Cairo, Egypt.",
+      "Built during Egypt's Old Kingdom.",
+      "The Great Pyramid was built for Pharaoh Khufu."
     ]
   },
   {
     id: "place-great-wall",
     category: "places",
-    title: "Great Wall of China",
-    meta: "Multiple periods · China",
-    icon: "🏛️",
-    region: "Asia",
-    summary: "A network of fortifications built and rebuilt by successive Chinese states and dynasties over many centuries.",
-    details: [
-      ["Construction history", "Different walls were built by various states. Qin-era rulers linked some earlier fortifications, while many surviving sections date to later dynasties, especially the Ming."],
-      ["Purpose", "The walls helped control movement, defend strategic areas, and support border administration, though effectiveness varied."],
-      ["Design", "The system includes walls, watchtowers, passes, and other defensive structures adapted to local terrain."],
-      ["Legacy", "The Great Wall is a UNESCO World Heritage Site and an enduring symbol of Chinese history."]
+    name: "Great Wall of China",
+    period: "Various periods from ancient times onward",
+    region: "China",
+    icon: "🏯",
+    summary: "A vast system of defensive walls built and rebuilt by successive Chinese states.",
+    details: "The Great Wall is not a single uninterrupted wall built at one time. Different Chinese states constructed defensive walls over many centuries. Many of the best-known surviving sections date to the Ming dynasty.",
+    facts: [
+      "Located across northern China.",
+      "Built and rebuilt over many centuries.",
+      "Many famous surviving sections date to the Ming dynasty."
     ]
   },
 
+  // QUOTES: original wording; no false historical attributions
   {
-    id: "event-berlin-wall",
-    category: "events",
-    title: "The Fall of the Berlin Wall",
-    meta: "9 November 1989 · Germany",
-    icon: "📜",
-    region: "Europe",
-    summary: "A historic turning point in the Cold War that opened the way toward German reunification.",
-    details: [
-      ["Why was the wall built?", "After World War II, Germany and Berlin were divided into sectors controlled by the victorious powers. As Cold War tensions deepened, East Germany faced large-scale emigration to West Berlin and West Germany. The East German government began building the Berlin Wall on 13 August 1961 to stop people leaving through Berlin. The wall became a symbol of the division between communist East and capitalist West."],
-      ["Who built it?", "The wall was built by the German Democratic Republic (East Germany), under its ruling Socialist Unity Party and security forces, with the wider political backing of the Soviet bloc. It began as barriers and wire fencing and later became a fortified border system."],
-      ["Why did it fall?", "By 1989, public protests in East Germany were growing, more East Germans were leaving through other Eastern European countries, and political change across the Soviet bloc was weakening the government's control. On 9 November, East German official Günter Schabowski gave a confusing announcement about new travel rules, saying they were effective immediately. Crowds gathered at border crossings, and guards eventually opened them."],
-      ["Who brought it down?", "There was no single person who brought the wall down. Peaceful protesters, East German citizens, wider political changes, and the actions of border guards all contributed. People began chipping away at the wall that night; demolition and removal continued afterward."],
-      ["What happened next?", "The opening of the border accelerated the process that led to German reunification on 3 October 1990. It also became one of the defining events associated with the end of the Cold War in Europe."],
-      ["Historical significance", "The fall of the Berlin Wall showed how public pressure and political change could transform a divided society. It did not instantly solve every social or economic problem, but it marked the end of one of the most visible symbols of Cold War division."]
-    ]
+    id: "quote-small-steps",
+    category: "quotes",
+    name: "Small Steps",
+    type: "motivational",
+    icon: "💬",
+    author: "Kingdom of Legends",
+    summary: "Small steps still move you forward.",
+    details: "Small steps still move you forward. Consistency can turn a difficult goal into a manageable journey."
   },
+  {
+    id: "quote-keep-learning",
+    category: "quotes",
+    name: "Keep Learning",
+    type: "motivational",
+    icon: "📚",
+    author: "Kingdom of Legends",
+    summary: "A curious mind never runs out of new worlds to discover.",
+    details: "A curious mind never runs out of new worlds to discover. Stay open to evidence, questions, and new ideas."
+  },
+  {
+    id: "quote-try-again",
+    category: "quotes",
+    name: "Try Again",
+    type: "motivational",
+    icon: "🌟",
+    author: "Kingdom of Legends",
+    summary: "A setback can teach you what the easy road never could.",
+    details: "A setback can teach you what the easy road never could. Reflect on what happened and choose your next step wisely."
+  },
+  {
+    id: "quote-late-homework",
+    category: "quotes",
+    name: "The Homework Clock",
+    type: "funny",
+    icon: "😂",
+    author: "Kingdom of Legends",
+    summary: "Homework has a special talent for becoming urgent at bedtime.",
+    details: "Homework has a special talent for becoming urgent at bedtime. Future you would appreciate starting a little earlier."
+  },
+  {
+    id: "quote-wifi",
+    category: "quotes",
+    name: "The Wi-Fi Mystery",
+    type: "funny",
+    icon: "📶",
+    author: "Kingdom of Legends",
+    summary: "The Wi-Fi only gets mysterious when the assignment is due.",
+    details: "The Wi-Fi only gets mysterious when the assignment is due. Technology has impeccable comedic timing."
+  },
+
+  // HISTORICAL EVENTS
   {
     id: "event-battle-adwa",
     category: "events",
-    title: "Battle of Adwa",
-    meta: "1 March 1896 · Ethiopia",
-    icon: "📜",
-    region: "Africa",
-    summary: "A decisive Ethiopian victory over invading Italian forces that became a major landmark in African and anti-colonial history.",
-    details: [
-      ["Background", "Conflict grew from disputes over Italy's attempt to establish colonial control and the interpretation of the Treaty of Wuchale. The Italian and Amharic versions differed on whether Ethiopia was required to conduct foreign relations through Italy."],
-      ["Who led the forces?", "Emperor Menelik II and Empress Taytu Betul were central figures. Ethiopian commanders included Ras Makonnen, Ras Alula, Ras Mikael, and others; many regional forces participated."],
-      ["The battle", "On 1 March 1896, Ethiopian forces defeated the Italian army near Adwa in northern Ethiopia. The outcome reflected mobilization, leadership, terrain, and serious problems in the Italian campaign."],
-      ["Consequences", "The victory helped preserve Ethiopia's independence. The Treaty of Addis Ababa in October 1896 replaced the disputed treaty and recognized Ethiopia's independence."],
-      ["Legacy", "Adwa became a powerful symbol of African resistance to European colonialism and remains a central event in Ethiopian national history."]
+    name: "Battle of Adwa",
+    period: "1 March 1896",
+    region: "Ethiopia",
+    icon: "🇪🇹",
+    summary: "Ethiopian forces defeated an invading Italian army, helping preserve Ethiopia's independence.",
+    details: "The Battle of Adwa took place in northern Ethiopia on 1 March 1896. Forces led by Emperor Menelik II and Empress Taytu Betul defeated an Italian invasion. The victory became a major symbol of African resistance to European colonial expansion.",
+    facts: [
+      "Took place on 1 March 1896.",
+      "Ethiopian forces defeated Italy's invading army.",
+      "Became an important symbol of African independence."
+    ]
+  },
+  {
+    id: "event-berlin-wall",
+    category: "events",
+    name: "Fall of the Berlin Wall",
+    period: "9 November 1989",
+    region: "Europe",
+    icon: "🧱",
+    summary: "The opening of the Berlin Wall became a defining moment in the end of the Cold War in Europe.",
+    details: "The Berlin Wall had divided East and West Berlin since 1961. On 9 November 1989, following political changes and confusion over a public announcement, crowds gathered at border crossings and the barriers opened. The event accelerated German reunification, which took place in October 1990.",
+    facts: [
+      "The wall was built in 1961.",
+      "Border crossings opened in November 1989.",
+      "Germany reunified in 1990."
     ]
   },
   {
     id: "event-moon-landing",
     category: "events",
-    title: "Apollo 11 Moon Landing",
-    meta: "20 July 1969 · Moon",
-    icon: "📜",
-    region: "Americas",
-    summary: "The first crewed mission to land humans on the Moon, carried out by NASA during the Space Race.",
-    details: [
-      ["Background", "The mission grew from the Space Race between the United States and the Soviet Union during the Cold War. President John F. Kennedy had set the goal of landing a person on the Moon and returning them safely to Earth."],
-      ["The crew", "Neil Armstrong and Buzz Aldrin landed on the Moon in the lunar module Eagle, while Michael Collins remained in lunar orbit in the command module."],
-      ["The landing", "The lunar module touched down on 20 July 1969 UTC. Armstrong and Aldrin walked on the lunar surface while Collins continued orbiting above."],
-      ["Return", "The astronauts returned safely to Earth on 24 July 1969."],
-      ["Legacy", "Apollo 11 was a major engineering achievement and a landmark in space exploration, enabled by the work of many engineers, scientists, technicians, and support teams."]
-    ]
-  },
-
-  {
-    id: "quote-motivation-1",
-    category: "quotes",
-    title: "Small Steps",
-    meta: "Motivational · Original wording",
-    icon: "💬",
-    quoteType: "Motivational",
-    summary: "Small steps taken consistently can lead to meaningful progress.",
-    details: [
-      ["Quote", "You do not have to climb the whole mountain today. Just take the next honest step."],
-      ["Reflection", "Progress is often built through steady effort rather than one dramatic moment."]
+    name: "Apollo 11 Moon Landing",
+    period: "20 July 1969",
+    region: "World",
+    icon: "🌕",
+    summary: "Apollo 11 carried the first humans to land on the Moon.",
+    details: "NASA's Apollo 11 mission landed on the Moon on 20 July 1969. Neil Armstrong and Buzz Aldrin walked on the lunar surface while Michael Collins remained in lunar orbit. The mission was a milestone in space exploration.",
+    facts: [
+      "Launched on 16 July 1969.",
+      "The lunar module landed on 20 July.",
+      "Returned safely to Earth on 24 July 1969."
     ]
   },
   {
-    id: "quote-motivation-2",
-    category: "quotes",
-    title: "Keep Learning",
-    meta: "Motivational · Original wording",
-    icon: "💬",
-    quoteType: "Motivational",
-    summary: "Mistakes can become useful lessons when you learn from them.",
-    details: [
-      ["Quote", "A mistake is not the end of the lesson; sometimes it is where the lesson begins."],
-      ["Reflection", "Review what happened, adjust your approach, and keep moving forward."]
-    ]
-  },
-  {
-    id: "quote-funny-1",
-    category: "quotes",
-    title: "The Five-Minute Plan",
-    meta: "Funny · Original wording",
-    icon: "💬",
-    quoteType: "Funny",
-    summary: "A little joke about procrastination.",
-    details: [
-      ["Quote", "I made a five-minute plan. It took me three hours to feel ready to start."],
-      ["Reflection", "Sometimes the hardest part of a task is simply beginning."]
-    ]
-  },
-  {
-    id: "quote-funny-2",
-    category: "quotes",
-    title: "Expert Napper",
-    meta: "Funny · Original wording",
-    icon: "💬",
-    quoteType: "Funny",
-    summary: "A playful reminder that rest is tempting.",
-    details: [
-      ["Quote", "My productivity app says I need focus. My pillow says I need a meeting."],
-      ["Reflection", "Balance matters: work when it's time to work, and rest when it's time to rest."]
+    id: "event-french-revolution",
+    category: "events",
+    name: "French Revolution",
+    period: "1789–1799",
+    region: "Europe",
+    icon: "⚖️",
+    summary: "A period of political upheaval that transformed France and influenced modern political ideas.",
+    details: "The French Revolution began in 1789 amid financial crisis, social inequality, and political conflict. It brought the end of the monarchy, the establishment of a republic, and major debates about citizenship, rights, and government. Its consequences reshaped France and influenced politics internationally.",
+    facts: [
+      "Began in 1789.",
+      "Ended the French absolute monarchy.",
+      "Influenced political movements around the world."
     ]
   }
 ];
 
-const UI_TEXT = {
+/* -------------------- Translations -------------------- */
+
+const UI = {
   en: {
-    home: "Home",
-    kings: "Kings",
-    leaders: "Leaders",
-    scientists: "Scientists",
-    places: "Places",
-    quotes: "Quotes",
-    events: "Events",
-    feedback: "Feedback",
-    heroEyebrow: "EXPLORE THE STORIES THAT SHAPED OUR WORLD",
-    heroTitle: "Discover the <span>Kingdom</span> of History",
-    heroText: "Explore kings, leaders, scientists, historical places, unforgettable events, and words that inspire.",
-    explore: "Explore the collection",
-    learn: "Discover the mission",
-    collectionTitle: "Explore the Collections",
-    collectionText: "Choose a collection to explore its entries.",
-    noticeTitle: "Growing collection:",
-    noticeText: "The numbers shown are collection goals. The entries currently available are starter examples; the full 680-entry collection is not complete yet.",
-    browseTitle: "Browse the Collection",
-    browseText: "Search names, places, dates, events, and descriptions.",
+    navHome: "Home",
+    navCollections: "Collections",
+    navExplore: "Explore",
+    navQuotes: "Quotes",
+    navFeedback: "Feedback",
+    heroEyebrow: "HISTORY · KNOWLEDGE · INSPIRATION",
+    heroTitle: 'Discover the <span class="gold-text">Legends</span> of History',
+    heroDescription: "Explore the kings who ruled empires, the minds that changed science, the places that shaped civilizations, and the events that changed our world.",
+    exploreButton: "Explore Collections",
+    quotesButton: "Discover Quotes",
+    statKings: "Kings",
+    statLeaders: "Leaders",
+    statScientists: "Scientists",
+    statPlaces: "Historic Places",
+    statQuotes: "Quotes",
+    statEvents: "Historical Events",
+    collectionsEyebrow: "THE ARCHIVES",
+    collectionsTitle: "Explore the Collections",
+    collectionsDescription: "Choose a collection and discover its stories.",
+    browseEyebrow: "YOUR JOURNEY STARTS HERE",
+    browseTitle: "Explore History",
+    browseDescription: "Search the archives and open a story to learn more.",
     searchLabel: "Search",
-    searchPlaceholder: "Search history...",
-    categoryLabel: "Category",
-    allCategories: "All categories",
-    sortLabel: "Sort",
-    newest: "Newest added",
-    alphabetical: "Alphabetical",
-    resultSingular: "entry",
-    resultPlural: "entries",
+    searchPlaceholder: "Search names, places, or stories...",
+    categoryLabel: "Collection",
+    allCollections: "All collections",
+    sortLabel: "Sort by",
+    sortDefault: "Default",
+    sortAZ: "Name: A–Z",
+    sortZA: "Name: Z–A",
+    quotesEyebrow: "WORDS THAT LAST",
+    quotesHeading: "Quotes to Remember",
+    quotesDescription: "Discover funny and motivational words, then copy or share your favorites.",
+    quoteSearchLabel: "Find a quote",
+    quoteSearchPlaceholder: "Search quotes...",
+    quoteTypeLabel: "Quote type",
+    quoteAll: "All quotes",
+    quoteMotivational: "Motivational",
+    quoteFunny: "Funny",
+    feedbackEyebrow: "HELP US GROW",
+    feedbackTitle: "Share Your Feedback",
+    feedbackDescription: "Tell us what you enjoyed and what you would like to see next.",
+    feedbackSubheading: "Your ideas matter",
+    feedbackSubtext: "Help make this historical library more useful for curious minds everywhere.",
+    nameLabel: "Your name (optional)",
+    namePlaceholder: "Enter your name",
+    messageLabel: "Your feedback",
+    messagePlaceholder: "Write your feedback...",
+    sendFeedback: "Submit Feedback",
+    feedbackNote: "Demo form: feedback is not sent to a server.",
+    footerText: "Preserving the stories of yesterday, inspiring the minds of tomorrow.",
+    storyDetails: "STORY DETAILS",
     readMore: "Read More",
     copy: "Copy",
     share: "Share",
-    noResults: "No matching entries",
-    noResultsText: "Try another search term or choose a different category.",
+    copied: "Copied to clipboard!",
+    copyFailed: "Could not copy automatically. Please select and copy the text.",
+    shareUnavailable: "Sharing is not available in this browser.",
     previous: "Previous",
     next: "Next",
-    missionTitle: "Our Mission",
-    missionText: "Kingdom of Legends aims to make history easier to explore through clear summaries and detailed stories. Entries are being added in stages, and historical details should be checked against reliable sources.",
-    feedbackTitle: "Share Your Feedback",
-    feedbackText: "Tell us what works well and what you would like to see improved.",
-    feedbackName: "Name (optional)",
-    feedbackNamePlaceholder: "Your name",
-    feedbackMessage: "Your message",
-    feedbackPlaceholder: "Write your feedback...",
-    feedbackSubmit: "Submit feedback",
-    feedbackNote: "This demo has no connected server, so feedback is not sent to the site owner.",
-    feedbackSuccess: "Your message was checked in this demo, but it was not sent or saved.",
-    requiredMessage: "Please write a message first.",
-    footer: "Made for curious minds and lovers of history.",
-    close: "Close",
-    quote: "Quote",
-    copied: "Copied to clipboard!",
-    copyFailed: "Copy was not available. Please select and copy the text manually.",
-    shareUnavailable: "Sharing is not supported in this browser. You can copy the quote instead.",
-    details: "Details"
+    noResults: "No matching stories found. Try another search.",
+    loading: "Loading stories...",
+    results: "stories found",
+    of: "of",
+    available: "available",
+    goal: "goal",
+    feedbackSuccess: "Thank you for your feedback!",
+    feedbackRequired: "Please enter your feedback first.",
+    demoWarning: "This demo does not send or save feedback online.",
+    region: "Region",
+    field: "Field",
+    author: "By",
+    quoteType: "Type"
   },
   am: {
-    home: "መነሻ",
-    kings: "ነገሥታት",
-    leaders: "መሪዎች",
-    scientists: "ሳይንቲስቶች",
-    places: "ታሪካዊ ቦታዎች",
-    quotes: "ጥቅሶች",
-    events: "ታሪካዊ ክስተቶች",
-    feedback: "አስተያየት",
-    heroEyebrow: "ዓለማችንን የቀየሩ ታሪኮችን ያስሱ",
-    heroTitle: "የታሪክን <span>መንግሥት</span> ያግኙ",
-    heroText: "ነገሥታትን፣ መሪዎችን፣ ሳይንቲስቶችን፣ ታሪካዊ ቦታዎችን፣ ክስተቶችንና አነቃቂ ጥቅሶችን ያስሱ።",
-    explore: "ስብስቡን ያስሱ",
-    learn: "ስለ ዓላማችን ይወቁ",
-    collectionTitle: "የታሪክ ስብስቦች",
-    collectionText: "ለማስሰስ አንድ ምድብ ይምረጡ።",
-    noticeTitle: "በመጨመር ላይ:",
-    noticeText: "የሚታዩት ቁጥሮች የስብስቡ ግቦች ናቸው። አሁን ያሉት መረጃዎች የመጀመሪያ ምሳሌዎች ናቸው፤ ሙሉው 680 መረጃዎች ገና አልተሟሉም።",
-    browseTitle: "ስብስቡን ያስሱ",
-    browseText: "ስሞችን፣ ቦታዎችን፣ ቀኖችንና መግለጫዎችን ይፈልጉ።",
+    navHome: "መነሻ",
+    navCollections: "ስብስቦች",
+    navExplore: "ፈልግ",
+    navQuotes: "ጥቅሶች",
+    navFeedback: "አስተያየት",
+    heroEyebrow: "ታሪክ · እውቀት · መነሳሳት",
+    heroTitle: 'የታሪክ <span class="gold-text">ታላላቅ ሰዎችን</span> ያግኙ',
+    heroDescription: "ንጉሦችን፣ ሳይንቲስቶችን፣ ታሪካዊ ቦታዎችንና ዓለምን የቀየሩ ክስተቶችን ያስሱ።",
+    exploreButton: "ስብስቦችን ያስሱ",
+    quotesButton: "ጥቅሶችን ይመልከቱ",
+    statKings: "ነገሥታት",
+    statLeaders: "መሪዎች",
+    statScientists: "ሳይንቲስቶች",
+    statPlaces: "ታሪካዊ ቦታዎች",
+    statQuotes: "ጥቅሶች",
+    statEvents: "ታሪካዊ ክስተቶች",
+    collectionsEyebrow: "የታሪክ ማህደር",
+    collectionsTitle: "የታሪክ ስብስቦችን ያስሱ",
+    collectionsDescription: "አንድ ስብስብ ይምረጡና ታሪኮቹን ያግኙ።",
+    browseEyebrow: "ጉዞዎ እዚህ ይጀምራል",
+    browseTitle: "ታሪክን ያስሱ",
+    browseDescription: "ታሪኮችን ይፈልጉና ዝርዝራቸውን ያንብቡ።",
     searchLabel: "ፍለጋ",
-    searchPlaceholder: "ታሪክ ይፈልጉ...",
-    categoryLabel: "ምድብ",
-    allCategories: "ሁሉም ምድቦች",
-    sortLabel: "ቅደም ተከተል",
-    newest: "አዲስ የተጨመሩ",
-    alphabetical: "በፊደል ቅደም ተከተል",
-    resultSingular: "መረጃ",
-    resultPlural: "መረጃዎች",
+    searchPlaceholder: "ስም፣ ቦታ ወይም ታሪክ ይፈልጉ...",
+    categoryLabel: "ስብስብ",
+    allCollections: "ሁሉም ስብስቦች",
+    sortLabel: "አደራደር",
+    sortDefault: "መደበኛ",
+    sortAZ: "ስም፦ ከ A እስከ Z",
+    sortZA: "ስም፦ ከ Z እስከ A",
+    quotesEyebrow: "የማይረሱ ቃላት",
+    quotesHeading: "የሚታወሱ ጥቅሶች",
+    quotesDescription: "አበረታችና አስቂኝ ጥቅሶችን ያግኙ፤ ይቅዱ ወይም ያጋሩ።",
+    quoteSearchLabel: "ጥቅስ ይፈልጉ",
+    quoteSearchPlaceholder: "ጥቅስ ይፈልጉ...",
+    quoteTypeLabel: "የጥቅስ አይነት",
+    quoteAll: "ሁሉም ጥቅሶች",
+    quoteMotivational: "አበረታች",
+    quoteFunny: "አስቂኝ",
+    feedbackEyebrow: "እንድናድግ ይርዱን",
+    feedbackTitle: "አስተያየትዎን ያጋሩ",
+    feedbackDescription: "የወደዱትንና ቀጥሎ ማየት የሚፈልጉትን ይንገሩን።",
+    feedbackSubheading: "ሀሳብዎ ዋጋ አለው",
+    feedbackSubtext: "ይህ የታሪክ ማህደር የበለጠ ጠቃሚ እንዲሆን ይርዱን።",
+    nameLabel: "ስም (አማራጭ)",
+    namePlaceholder: "ስምዎን ያስገቡ",
+    messageLabel: "አስተያየትዎ",
+    messagePlaceholder: "አስተያየትዎን ይጻፉ...",
+    sendFeedback: "አስተያየት ይላኩ",
+    feedbackNote: "የሙከራ ቅጽ ነው፤ መረጃው ወደ ሰርቨር አይላክም።",
+    footerText: "ያለፈውን ታሪክ እንጠብቃለን፣ የነገውን አእምሮ እናነሳሳለን።",
+    storyDetails: "የታሪኩ ዝርዝር",
     readMore: "ተጨማሪ ያንብቡ",
     copy: "ቅዳ",
     share: "አጋራ",
-    noResults: "የሚዛመድ መረጃ አልተገኘም",
-    noResultsText: "ሌላ ቃል ይፈልጉ ወይም ሌላ ምድብ ይምረጡ።",
+    copied: "ወደ ቅጂ ሰሌዳ ተቀድቷል!",
+    copyFailed: "በራስ-ሰር መቅዳት አልተቻለም።",
+    shareUnavailable: "በዚህ አሳሽ ማጋራት አይቻልም።",
     previous: "ቀዳሚ",
     next: "ቀጣይ",
-    missionTitle: "የእኛ ዓላማ",
-    missionText: "ዓላማችን ታሪክን በግልጽ ማብራሪያዎችና በዝርዝር ታሪኮች ማቅረብ ነው። መረጃዎች በደረጃ እየተጨመሩ ነው።",
-    feedbackTitle: "አስተያየት ይስጡ",
-    feedbackText: "ምን እንደወደዱና ምን መሻሻል እንዳለበት ይንገሩን።",
-    feedbackName: "ስም (አማራጭ)",
-    feedbackNamePlaceholder: "ስምዎ",
-    feedbackMessage: "መልዕክትዎ",
-    feedbackPlaceholder: "አስተያየትዎን ይጻፉ...",
-    feedbackSubmit: "አስተያየት ላክ",
-    feedbackNote: "ይህ የሙከራ ስሪት ከሰርቨር ጋር አልተገናኘም፤ ስለዚህ አስተያየቱ ለገጹ ባለቤት አይላክም።",
-    feedbackSuccess: "መልዕክቱ በሙከራው ላይ ተመርምሯል፤ ግን አልተላከም ወይም አልተቀመጠም።",
-    requiredMessage: "እባክዎ መጀመሪያ መልዕክት ይጻፉ።",
-    footer: "ታሪክን ለሚወዱና ለሚጠይቁ አእምሮዎች የተዘጋጀ።",
-    close: "ዝጋ",
-    quote: "ጥቅስ",
-    copied: "ወደ clipboard ተቀድቷል!",
-    copyFailed: "መቅዳት አልተቻለም፤ ጽሑፉን በእጅ ይምረጡና ይቅዱ።",
-    shareUnavailable: "በዚህ አሳሽ ማጋራት አይደገፍም፤ ጥቅሱን መቅዳት ይችላሉ።",
-    details: "ዝርዝር"
-  },
-  ti: {
-    home: "መበገሲ",
-    kings: "ነገስታት",
-    leaders: "መራሕቲ",
-    scientists: "ሳይንቲስታት",
-    places: "ታሪኻዊ ቦታታት",
-    quotes: "ጥቕስታት",
-    events: "ታሪኻዊ ፍጻመታት",
-    feedback: "ርእይቶ",
-    heroEyebrow: "ታሪኽ ዝቐየሩ ዛንታታት ኣስስሑ",
-    heroTitle: "መንግስቲ <span>ታሪኽ</span> ዳህስሱ",
-    heroText: "ነገስታት፣ መራሕቲ፣ ሳይንቲስታት፣ ታሪኻዊ ቦታታትን ፍጻመታትን ዳህስሱ።",
-    explore: "ስብስቡ ዳህስሱ",
-    learn: "ብዛዕባ ዕላማና",
-    collectionTitle: "ስብስባት ታሪኽ",
-    collectionText: "ንምድህሳስ ምድብ ምረጹ።",
-    noticeTitle: "እናዓበየ ዝኸይድ ስብስብ:",
-    noticeText: "እቶም ቁጽርታት ዕላማታት እዮም። እቶም ሕጂ ዘለዉ መረዳእታታት መጀመርታዊ ኣብነታት እዮም።",
-    browseTitle: "ስብስቡ ዳህስሱ",
-    browseText: "ስማት፣ ቦታታት፣ ዕለታትን መግለጺታትን ድለዩ።",
-    searchLabel: "ድለዩ",
-    searchPlaceholder: "ታሪኽ ድለዩ...",
-    categoryLabel: "ምድብ",
-    allCategories: "ኩሎም ምድባት",
-    sortLabel: "ምድባር",
-    newest: "ሓደሽቲ",
-    alphabetical: "ብፊደል",
-    resultSingular: "መረዳእታ",
-    resultPlural: "መረዳእታታት",
-    readMore: "ተወሳኺ ኣንብቡ",
-    copy: "ቅዳሕ",
-    share: "ኣካፍሉ",
-    noResults: "ዝሰማማዕ መረዳእታ ኣይተረኽበን",
-    noResultsText: "ካልእ ቃል ድለዩ ወይ ካልእ ምድብ ምረጹ።",
-    previous: "ዝሓለፈ",
-    next: "ዝቕጽል",
-    missionTitle: "ዕላማና",
-    missionText: "ዕላማና ታሪኽ ብንጹር መግለጺታትን ዝርዝር ዛንታታትን ምቕራብ እዩ።",
-    feedbackTitle: "ርእይቶ ሃቡ",
-    feedbackText: "እንታይ ከም ዝፈተኹምን እንታይ ክመሓየሽ ከም ዘለዎን ንገሩና።",
-    feedbackName: "ስም (ኣማራጺ)",
-    feedbackNamePlaceholder: "ስምኩም",
-    feedbackMessage: "መልእኽትኹም",
-    feedbackPlaceholder: "ርእይቶኹም ጸሓፉ...",
-    feedbackSubmit: "ርእይቶ ስደዱ",
-    feedbackNote: "እዚ ሙከራ ስሪት ምስ ሰርቨር ኣይተኣሳሰረን።",
-    feedbackSuccess: "መልእኽትኹም ኣብዚ ሙከራ ተመርሚሩ፤ ግን ኣይተላእከን።",
-    requiredMessage: "በጃኹም መጀመርታ መልእኽቲ ጸሓፉ።",
-    footer: "ንታሪኽ ዝፈትዉ ኣእምሮታት ዝተዳለወ።",
-    close: "ዕጸዉ",
-    quote: "ጥቕሲ",
-    copied: "ተቐዲሑ!",
-    copyFailed: "ኣይተቐድሐን፤ ጽሑፉ ብኢድኩም ቅድሑ።",
-    shareUnavailable: "ኣብዚ ኣሳሽ ምክፋል ኣይድገፍን።",
-    details: "ዝርዝር"
-  },
-  fr: {
-    home: "Accueil", kings: "Rois", leaders: "Dirigeants",
-    scientists: "Scientifiques", places: "Lieux historiques",
-    quotes: "Citations", events: "Événements", feedback: "Avis",
-    heroEyebrow: "EXPLOREZ LES HISTOIRES QUI ONT FAÇONNÉ LE MONDE",
-    heroTitle: "Découvrez le <span>royaume</span> de l’histoire",
-    heroText: "Explorez les rois, dirigeants, scientifiques, lieux historiques, événements et citations inspirantes.",
-    explore: "Explorer la collection", learn: "Notre mission",
-    collectionTitle: "Explorer les collections",
-    collectionText: "Choisissez une collection à explorer.",
-    noticeTitle: "Collection en développement :",
-    noticeText: "Les nombres indiqués sont des objectifs. Les entrées actuelles sont des exemples de départ ; les 680 entrées ne sont pas encore terminées.",
-    browseTitle: "Parcourir la collection",
-    browseText: "Recherchez des noms, des lieux, des dates et des descriptions.",
-    searchLabel: "Recherche", searchPlaceholder: "Rechercher dans l’histoire...",
-    categoryLabel: "Catégorie", allCategories: "Toutes les catégories",
-    sortLabel: "Trier", newest: "Ajouts récents", alphabetical: "Ordre alphabétique",
-    resultSingular: "entrée", resultPlural: "entrées", readMore: "Lire la suite",
-    copy: "Copier", share: "Partager", noResults: "Aucun résultat",
-    noResultsText: "Essayez un autre terme ou une autre catégorie.",
-    previous: "Précédent", next: "Suivant",
-    missionTitle: "Notre mission",
-    missionText: "Kingdom of Legends rend l’histoire plus facile à explorer grâce à des résumés clairs et des récits détaillés.",
-    feedbackTitle: "Votre avis", feedbackText: "Dites-nous ce qui fonctionne et ce qui pourrait être amélioré.",
-    feedbackName: "Nom (facultatif)", feedbackNamePlaceholder: "Votre nom",
-    feedbackMessage: "Votre message", feedbackPlaceholder: "Écrivez votre avis...",
-    feedbackSubmit: "Envoyer l’avis",
-    feedbackNote: "Cette démo n’est reliée à aucun serveur ; votre avis n’est pas transmis au propriétaire du site.",
-    feedbackSuccess: "Votre message a été vérifié dans cette démo, mais il n’a pas été envoyé ni enregistré.",
-    requiredMessage: "Veuillez d’abord écrire un message.",
-    footer: "Pour les esprits curieux et les passionnés d’histoire.",
-    close: "Fermer", quote: "Citation", copied: "Copié !",
-    copyFailed: "Copie indisponible. Sélectionnez et copiez le texte manuellement.",
-    shareUnavailable: "Le partage n’est pas pris en charge ici. Vous pouvez copier la citation.",
-    details: "Détails"
-  },
-  es: {
-    home: "Inicio", kings: "Reyes", leaders: "Líderes",
-    scientists: "Científicos", places: "Lugares históricos",
-    quotes: "Citas", events: "Acontecimientos", feedback: "Opiniones",
-    heroEyebrow: "EXPLORA LAS HISTORIAS QUE CAMBIARON EL MUNDO",
-    heroTitle: "Descubre el <span>reino</span> de la historia",
-    heroText: "Explora reyes, líderes, científicos, lugares históricos, acontecimientos y frases inspiradoras.",
-    explore: "Explorar colección", learn: "Nuestra misión",
-    collectionTitle: "Explorar las colecciones",
-    collectionText: "Elige una colección para explorarla.",
-    noticeTitle: "Colección en crecimiento:",
-    noticeText: "Las cifras son objetivos. Las entradas actuales son ejemplos iniciales; las 680 entradas aún no están completas.",
-    browseTitle: "Explorar la colección",
-    browseText: "Busca nombres, lugares, fechas y descripciones.",
-    searchLabel: "Buscar", searchPlaceholder: "Buscar historia...",
-    categoryLabel: "Categoría", allCategories: "Todas las categorías",
-    sortLabel: "Ordenar", newest: "Añadidos recientemente", alphabetical: "Orden alfabético",
-    resultSingular: "entrada", resultPlural: "entradas", readMore: "Leer más",
-    copy: "Copiar", share: "Compartir", noResults: "No hay resultados",
-    noResultsText: "Prueba otra palabra o categoría.",
-    previous: "Anterior", next: "Siguiente",
-    missionTitle: "Nuestra misión",
-    missionText: "Kingdom of Legends facilita explorar la historia con resúmenes claros y relatos detallados.",
-    feedbackTitle: "Envía tu opinión", feedbackText: "Cuéntanos qué funciona y qué se puede mejorar.",
-    feedbackName: "Nombre (opcional)", feedbackNamePlaceholder: "Tu nombre",
-    feedbackMessage: "Tu mensaje", feedbackPlaceholder: "Escribe tu opinión...",
-    feedbackSubmit: "Enviar opinión",
-    feedbackNote: "Esta demostración no está conectada a un servidor; el mensaje no se envía al propietario.",
-    feedbackSuccess: "El mensaje se revisó en esta demostración, pero no se envió ni guardó.",
-    requiredMessage: "Escribe un mensaje primero.",
-    footer: "Para mentes curiosas y amantes de la historia.",
-    close: "Cerrar", quote: "Cita", copied: "¡Copiado!",
-    copyFailed: "No se pudo copiar. Selecciona el texto y cópialo manualmente.",
-    shareUnavailable: "Este navegador no permite compartir aquí. Puedes copiar la cita.",
-    details: "Detalles"
-  },
-  ar: {
-    home: "الرئيسية", kings: "الملوك", leaders: "القادة",
-    scientists: "العلماء", places: "أماكن تاريخية",
-    quotes: "اقتباسات", events: "أحداث تاريخية", feedback: "ملاحظات",
-    heroEyebrow: "اكتشف القصص التي غيّرت العالم",
-    heroTitle: "اكتشف <span>مملكة</span> التاريخ",
-    heroText: "استكشف الملوك والقادة والعلماء والأماكن التاريخية والأحداث والاقتباسات الملهمة.",
-    explore: "استكشف المجموعة", learn: "تعرف على رسالتنا",
-    collectionTitle: "استكشف المجموعات", collectionText: "اختر مجموعة لاستكشافها.",
-    noticeTitle: "مجموعة قيد التطوير:",
-    noticeText: "الأرقام هي أهداف للمجموعة. المحتوى الحالي أمثلة أولية، ولم تكتمل العناصر الـ680 بعد.",
-    browseTitle: "تصفح المجموعة", browseText: "ابحث عن الأسماء والأماكن والتواريخ والأوصاف.",
-    searchLabel: "بحث", searchPlaceholder: "ابحث في التاريخ...",
-    categoryLabel: "الفئة", allCategories: "كل الفئات",
-    sortLabel: "ترتيب", newest: "المضاف حديثًا", alphabetical: "أبجديًا",
-    resultSingular: "عنصر", resultPlural: "عناصر", readMore: "اقرأ المزيد",
-    copy: "نسخ", share: "مشاركة", noResults: "لا توجد نتائج",
-    noResultsText: "جرّب كلمة أخرى أو فئة مختلفة.",
-    previous: "السابق", next: "التالي",
-    missionTitle: "رسالتنا", missionText: "يساعد موقع Kingdom of Legends على استكشاف التاريخ بملخصات واضحة وقصص مفصلة.",
-    feedbackTitle: "أرسل ملاحظاتك", feedbackText: "أخبرنا بما يعجبك وما يحتاج إلى تحسين.",
-    feedbackName: "الاسم (اختياري)", feedbackNamePlaceholder: "اسمك",
-    feedbackMessage: "رسالتك", feedbackPlaceholder: "اكتب ملاحظاتك...",
-    feedbackSubmit: "إرسال الملاحظات",
-    feedbackNote: "هذه نسخة تجريبية غير متصلة بخادم؛ لن تُرسل الملاحظات إلى مالك الموقع.",
-    feedbackSuccess: "تم فحص الرسالة في هذه النسخة التجريبية، لكنها لم تُرسل أو تُحفظ.",
-    requiredMessage: "يرجى كتابة رسالة أولًا.",
-    footer: "للعقول الفضولية ومحبي التاريخ.",
-    close: "إغلاق", quote: "اقتباس", copied: "تم النسخ!",
-    copyFailed: "تعذر النسخ. حدّد النص وانسخه يدويًا.",
-    shareUnavailable: "المشاركة غير مدعومة في هذا المتصفح. يمكنك نسخ الاقتباس.",
-    details: "التفاصيل"
-  },
-  de: {
-    home: "Startseite", kings: "Könige", leaders: "Führungspersönlichkeiten",
-    scientists: "Wissenschaftler", places: "Historische Orte",
-    quotes: "Zitate", events: "Ereignisse", feedback: "Feedback",
-    heroEyebrow: "ENTDECKE DIE GESCHICHTEN, DIE UNSERE WELT PRÄGTEN",
-    heroTitle: "Entdecke das <span>Königreich</span> der Geschichte",
-    heroText: "Entdecke Könige, Führungspersönlichkeiten, Wissenschaftler, historische Orte und Ereignisse.",
-    explore: "Sammlung entdecken", learn: "Unsere Mission",
-    collectionTitle: "Sammlungen entdecken", collectionText: "Wähle eine Sammlung.",
-    noticeTitle: "Wachsende Sammlung:",
-    noticeText: "Die Zahlen sind Ziele. Die aktuellen Einträge sind erste Beispiele; die vollständigen 680 Einträge sind noch nicht fertig.",
-    browseTitle: "Sammlung durchsuchen", browseText: "Suche nach Namen, Orten, Daten und Beschreibungen.",
-    searchLabel: "Suche", searchPlaceholder: "Geschichte suchen...",
-    categoryLabel: "Kategorie", allCategories: "Alle Kategorien",
-    sortLabel: "Sortieren", newest: "Neu hinzugefügt", alphabetical: "Alphabetisch",
-    resultSingular: "Eintrag", resultPlural: "Einträge", readMore: "Mehr lesen",
-    copy: "Kopieren", share: "Teilen", noResults: "Keine Treffer",
-    noResultsText: "Versuche einen anderen Suchbegriff oder eine andere Kategorie.",
-    previous: "Zurück", next: "Weiter",
-    missionTitle: "Unsere Mission", missionText: "Kingdom of Legends macht Geschichte durch klare Zusammenfassungen und ausführliche Geschichten zugänglich.",
-    feedbackTitle: "Feedback geben", feedbackText: "Sag uns, was gut funktioniert und was verbessert werden kann.",
-    feedbackName: "Name (optional)", feedbackNamePlaceholder: "Dein Name",
-    feedbackMessage: "Deine Nachricht", feedbackPlaceholder: "Schreibe dein Feedback...",
-    feedbackSubmit: "Feedback senden",
-    feedbackNote: "Diese Demo ist nicht mit einem Server verbunden; dein Feedback wird nicht an den Betreiber gesendet.",
-    feedbackSuccess: "Die Nachricht wurde in dieser Demo geprüft, aber nicht gesendet oder gespeichert.",
-    requiredMessage: "Bitte schreibe zuerst eine Nachricht.",
-    footer: "Für neugierige Köpfe und Geschichtsfans.",
-    close: "Schließen", quote: "Zitat", copied: "Kopiert!",
-    copyFailed: "Kopieren nicht möglich. Bitte markiere und kopiere den Text manuell.",
-    shareUnavailable: "Teilen wird in diesem Browser nicht unterstützt. Du kannst das Zitat kopieren.",
-    details: "Details"
-  },
-  it: {
-    home: "Home", kings: "Re", leaders: "Leader",
-    scientists: "Scienziati", places: "Luoghi storici",
-    quotes: "Citazioni", events: "Eventi storici", feedback: "Feedback",
-    heroEyebrow: "ESPLORA LE STORIE CHE HANNO CAMBIATO IL MONDO",
-    heroTitle: "Scopri il <span>regno</span> della storia",
-    heroText: "Esplora re, leader, scienziati, luoghi storici, eventi e citazioni ispiratrici.",
-    explore: "Esplora la raccolta", learn: "La nostra missione",
-    collectionTitle: "Esplora le raccolte", collectionText: "Scegli una raccolta.",
-    noticeTitle: "Raccolta in crescita:",
-    noticeText: "I numeri sono obiettivi. Le voci attuali sono esempi iniziali; le 680 voci complete non sono ancora pronte.",
-    browseTitle: "Sfoglia la raccolta", browseText: "Cerca nomi, luoghi, date e descrizioni.",
-    searchLabel: "Cerca", searchPlaceholder: "Cerca nella storia...",
-    categoryLabel: "Categoria", allCategories: "Tutte le categorie",
-    sortLabel: "Ordina", newest: "Aggiunti di recente", alphabetical: "Ordine alfabetico",
-    resultSingular: "voce", resultPlural: "voci", readMore: "Leggi di più",
-    copy: "Copia", share: "Condividi", noResults: "Nessun risultato",
-    noResultsText: "Prova un'altra parola o categoria.",
-    previous: "Precedente", next: "Successivo",
-    missionTitle: "La nostra missione", missionText: "Kingdom of Legends rende la storia più accessibile con riassunti chiari e racconti dettagliati.",
-    feedbackTitle: "Lascia un feedback", feedbackText: "Dicci cosa funziona e cosa potrebbe migliorare.",
-    feedbackName: "Nome (facoltativo)", feedbackNamePlaceholder: "Il tuo nome",
-    feedbackMessage: "Il tuo messaggio", feedbackPlaceholder: "Scrivi il tuo feedback...",
-    feedbackSubmit: "Invia feedback",
-    feedbackNote: "Questa demo non è collegata a un server; il messaggio non viene inviato al proprietario.",
-    feedbackSuccess: "Il messaggio è stato controllato in questa demo, ma non è stato inviato né salvato.",
-    requiredMessage: "Scrivi prima un messaggio.",
-    footer: "Per menti curiose e amanti della storia.",
-    close: "Chiudi", quote: "Citazione", copied: "Copiato!",
-    copyFailed: "Copia non disponibile. Seleziona e copia il testo manualmente.",
-    shareUnavailable: "La condivisione non è supportata in questo browser. Puoi copiare la citazione.",
-    details: "Dettagli"
-  },
-  pt: {
-    home: "Início", kings: "Reis", leaders: "Líderes",
-    scientists: "Cientistas", places: "Lugares históricos",
-    quotes: "Citações", events: "Eventos históricos", feedback: "Opiniões",
-    heroEyebrow: "EXPLORE AS HISTÓRIAS QUE MUDARAM O MUNDO",
-    heroTitle: "Descubra o <span>reino</span> da história",
-    heroText: "Explore reis, líderes, cientistas, lugares históricos, eventos e frases inspiradoras.",
-    explore: "Explorar coleção", learn: "Nossa missão",
-    collectionTitle: "Explorar coleções", collectionText: "Escolha uma coleção.",
-    noticeTitle: "Coleção em crescimento:",
-    noticeText: "Os números são metas. As entradas atuais são exemplos iniciais; as 680 entradas completas ainda não estão prontas.",
-    browseTitle: "Navegar pela coleção", browseText: "Pesquise nomes, lugares, datas e descrições.",
-    searchLabel: "Pesquisar", searchPlaceholder: "Pesquisar história...",
-    categoryLabel: "Categoria", allCategories: "Todas as categorias",
-    sortLabel: "Ordenar", newest: "Adicionados recentemente", alphabetical: "Ordem alfabética",
-    resultSingular: "entrada", resultPlural: "entradas", readMore: "Ler mais",
-    copy: "Copiar", share: "Compartilhar", noResults: "Nenhum resultado",
-    noResultsText: "Tente outro termo ou categoria.",
-    previous: "Anterior", next: "Próximo",
-    missionTitle: "Nossa missão", missionText: "Kingdom of Legends facilita explorar a história com resumos claros e relatos detalhados.",
-    feedbackTitle: "Envie sua opinião", feedbackText: "Conte o que funciona bem e o que pode melhorar.",
-    feedbackName: "Nome (opcional)", feedbackNamePlaceholder: "Seu nome",
-    feedbackMessage: "Sua mensagem", feedbackPlaceholder: "Escreva sua opinião...",
-    feedbackSubmit: "Enviar opinião",
-    feedbackNote: "Esta demonstração não está conectada a um servidor; sua mensagem não será enviada ao proprietário.",
-    feedbackSuccess: "A mensagem foi verificada nesta demonstração, mas não foi enviada nem salva.",
-    requiredMessage: "Escreva uma mensagem primeiro.",
-    footer: "Para mentes curiosas e amantes da história.",
-    close: "Fechar", quote: "Citação", copied: "Copiado!",
-    copyFailed: "Não foi possível copiar. Selecione e copie o texto manualmente.",
-    shareUnavailable: "O compartilhamento não é compatível com este navegador. Você pode copiar a citação.",
-    details: "Detalhes"
+    noResults: "የሚዛመድ ታሪክ አልተገኘም። ሌላ ይፈልጉ።",
+    loading: "ታሪኮች በመጫን ላይ...",
+    results: "ታሪኮች ተገኝተዋል",
+    of: "ከ",
+    available: "የተገኙ",
+    goal: "ግብ",
+    feedbackSuccess: "ስለ አስተያየትዎ እናመሰግናለን!",
+    feedbackRequired: "እባክዎ መጀመሪያ አስተያየት ያስገቡ።",
+    demoWarning: "ይህ የሙከራ ቅጽ አስተያየትን በመስመር ላይ አይልክም።",
+    region: "ክልል",
+    field: "የሙያ መስክ",
+    author: "ደራሲ",
+    quoteType: "አይነት"
   }
 };
 
-const CATEGORY_LABEL_KEYS = {
-  kings: "kings",
-  leaders: "leaders",
-  scientists: "scientists",
-  places: "places",
-  quotes: "quotes",
-  events: "events"
-};
+let currentLanguage = "en";
+let currentPage = 1;
+let currentQuotePage = 1;
+let toastTimeout = null;
 
-const state = {
-  page: 1,
-  query: "",
-  category: "all",
-  sort: "newest",
-  language: "en"
-};
+/* -------------------- Helpers -------------------- */
 
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+function $(selector) {
+  return document.querySelector(selector);
+}
 
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[character]);
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, function (char) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char];
+  });
 }
 
 function t(key) {
-  const language = UI_TEXT[state.language] || UI_TEXT.en;
-  return language[key] ?? UI_TEXT.en[key] ?? key;
+  const selected = UI[currentLanguage] || UI.en;
+  return selected[key] ?? UI.en[key] ?? key;
 }
 
-function categoryLabel(category) {
-  const key = CATEGORY_LABEL_KEYS[category];
-  return key ? t(key) : (CATEGORY_INFO[category]?.label || category);
+function categoryName(category) {
+  const keys = {
+    kings: "statKings",
+    leaders: "statLeaders",
+    scientists: "statScientists",
+    places: "statPlaces",
+    quotes: "statQuotes",
+    events: "statEvents"
+  };
+
+  return t(keys[category] || category);
 }
 
-function getQuote(item) {
-  const quoteDetail = item.details?.find(([heading]) => heading.toLowerCase() === "quote");
-  return quoteDetail ? quoteDetail[1] : item.summary;
+function normalizeText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase();
 }
 
-function showToast(message) {
-  const toast = $("#toast");
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add("show");
-  window.clearTimeout(showToast.timer);
-  showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+function getEntry(id) {
+  return entries.find(entry => entry.id === id);
 }
 
-function renderCollections() {
-  const grid = $("#collectionGrid");
-  if (!grid) return;
+function getVisibleEntries() {
+  const search = normalizeText($("#searchInput")?.value || "");
+  const category = $("#categoryFilter")?.value || "all";
+  const sort = $("#sortFilter")?.value || "default";
 
-  grid.innerHTML = Object.entries(CATEGORY_INFO).map(([key, category]) => {
-    const currentCount = DATA.filter(item => item.category === key).length;
-    return `
-      <a class="collection-card" href="#${key}" data-category-link="${key}">
-        <div class="collection-icon" aria-hidden="true">${category.icon}</div>
-        <h3>${escapeHTML(categoryLabel(key))}</h3>
-        <p>${escapeHTML(category.description)}</p>
-        <span class="collection-count">${currentCount} available · goal ${category.target}</span>
-      </a>`;
-  }).join("");
-}
+  let result = entries.filter(entry => {
+    const matchesCategory =
+      category === "all" || entry.category === category;
 
-function getFilteredData() {
-  let items = DATA.filter(item => {
-    const matchesCategory = state.category === "all" || item.category === state.category;
-    const searchable = [
-      item.title,
-      item.meta,
-      item.summary,
-      item.region,
-      item.quoteType,
-      ...(item.details || []).flat()
-    ].join(" ").toLocaleLowerCase();
+    const searchable = normalizeText([
+      entry.name,
+      entry.period,
+      entry.region,
+      entry.field,
+      entry.type,
+      entry.author,
+      entry.summary,
+      entry.details,
+      ...(entry.facts || [])
+    ].join(" "));
 
-    const matchesQuery = searchable.includes(state.query.toLocaleLowerCase());
-    return matchesCategory && matchesQuery;
+    return matchesCategory && searchable.includes(search);
   });
 
-  if (state.sort === "alphabetical") {
-    items.sort((a, b) => a.title.localeCompare(b.title));
+  if (sort === "az") {
+    result.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sort === "za") {
+    result.sort((a, b) => b.name.localeCompare(a.name));
   }
 
-  return items;
+  return result;
 }
 
-function renderCards() {
+/* -------------------- Collection cards -------------------- */
+
+function renderCollections() {
+  const container = $("#collectionGrid");
+  if (!container) return;
+
+  container.innerHTML = Object.keys(CATEGORY_INFO).map(category => {
+    const info = CATEGORY_INFO[category];
+    const count = entries.filter(entry => entry.category === category).length;
+    const goal = GOALS[category];
+
+    return `
+      <article class="collection-card">
+        <a href="#browse"
+           class="collection-icon"
+           aria-label="Explore ${escapeHTML(info.title)}"
+           data-category-link="${category}">${info.icon}</a>
+        <h3>
+          <a href="#browse" data-category-link="${category}">
+            ${escapeHTML(categoryName(category))}
+          </a>
+        </h3>
+        <p>${escapeHTML(
+          currentLanguage === "am"
+            ? ({
+                kings: "መንግሥታትን ኢምፓየሮችን የቀየሩ ነገሥታት።",
+                leaders: "ብሔሮችንና ሕዝቦችን የተፅዕኖ ያደረጉ መሪዎች።",
+                scientists: "እውቀታችንን የቀየሩ ግኝቶች።",
+                places: "የታሪክ ትውስታን የሚጠብቁ ቦታዎች።",
+                quotes: "የሚታወሱ አበረታችና አስቂኝ ቃላት።",
+                events: "የዓለምን ታሪክ የቀየሩ ክስተቶች።"
+              })[category]
+            : info.description
+        )}</p>
+        <a href="#browse"
+           class="collection-count"
+           data-category-link="${category}">
+          ${count} ${escapeHTML(t("available"))} · ${escapeHTML(t("goal"))} ${goal}
+        </a>
+      </article>
+    `;
+  }).join("");
+
+  container.querySelectorAll("[data-category-link]").forEach(link => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault();
+      const category = this.dataset.categoryLink;
+      const filter = $("#categoryFilter");
+
+      if (filter) filter.value = category;
+      currentPage = 1;
+      renderEntries();
+
+      if (category === "quotes") {
+        $("#quotes")?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        $("#browse")?.scrollIntoView({ behavior: "smooth" });
+      }
+
+      history.replaceState(null, "", `#${category}`);
+    });
+  });
+}
+
+/* -------------------- Main entries and pagination -------------------- */
+
+function renderEntries() {
   const grid = $("#entryGrid");
   const count = $("#resultCount");
   const pagination = $("#pagination");
-  if (!grid || !count || !pagination) return;
 
-  const filtered = getFilteredData();
+  if (!grid) return;
+
+  const filtered = getVisibleEntries();
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 
-  if (state.page > totalPages) state.page = totalPages;
-  if (state.page < 1) state.page = 1;
+  currentPage = Math.min(Math.max(currentPage, 1), totalPages);
 
-  const start = (state.page - 1) * PAGE_SIZE;
-  const visible = filtered.slice(start, start + PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageEntries = filtered.slice(start, start + PAGE_SIZE);
 
-  count.textContent = `${filtered.length} ${filtered.length === 1 ? t("resultSingular") : t("resultPlural")}`;
-
-  if (visible.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <h3>${escapeHTML(t("noResults"))}</h3>
-        <p>${escapeHTML(t("noResultsText"))}</p>
-      </div>`;
-  } else {
-    grid.innerHTML = visible.map(item => {
-      const quote = item.category === "quotes";
-      const summary = quote ? getQuote(item) : item.summary;
-      return `
-        <article class="entry-card">
-          <div class="entry-top">
-            <div class="entry-icon" aria-hidden="true">${item.icon || "📜"}</div>
-            <span class="entry-category">${escapeHTML(categoryLabel(item.category))}</span>
-          </div>
-          <div class="entry-body">
-            <h3>${escapeHTML(item.title)}</h3>
-            <div class="entry-meta">${escapeHTML(item.meta || "")}</div>
-            <p>${escapeHTML(summary)}</p>
-            <div class="entry-actions">
-              <button class="btn btn-primary" type="button" data-read="${escapeHTML(item.id)}">${escapeHTML(t("readMore"))}</button>
-              ${quote ? `<button class="btn btn-secondary" type="button" data-copy="${escapeHTML(item.id)}">${escapeHTML(t("copy"))}</button>
-              <button class="btn btn-secondary" type="button" data-share="${escapeHTML(item.id)}">${escapeHTML(t("share"))}</button>` : ""}
-            </div>
-          </div>
-        </article>`;
-    }).join("");
+  if (count) {
+    count.textContent = `${filtered.length} ${t("results")}`;
   }
 
-  renderPagination(filtered.length, totalPages);
+  if (pageEntries.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <p>${escapeHTML(t("noResults"))}</p>
+      </div>
+    `;
+  } else {
+    grid.innerHTML = pageEntries.map(entry => `
+      <article class="entry-card">
+        <span class="entry-icon" aria-hidden="true">
+          ${escapeHTML(entry.icon || "📜")}
+        </span>
+        <span class="entry-category">
+          ${escapeHTML(categoryName(entry.category))}
+        </span>
+        <h3>${escapeHTML(entry.name)}</h3>
+        ${entry.period ? `<div class="entry-meta">${escapeHTML(entry.period)}</div>` : ""}
+        <p>${escapeHTML(entry.summary)}</p>
+        <div class="entry-actions">
+          <button class="button button-primary"
+                  type="button"
+                  data-read-more="${escapeHTML(entry.id)}">
+            ${escapeHTML(t("readMore"))}
+          </button>
+          ${entry.category === "quotes" ? `
+            <button class="button button-secondary"
+                    type="button"
+                    data-copy-quote="${escapeHTML(entry.id)}">
+              ${escapeHTML(t("copy"))}
+            </button>
+          ` : ""}
+        </div>
+      </article>
+    `).join("");
+  }
+
+  renderPagination(pagination, currentPage, totalPages, page => {
+    currentPage = page;
+    renderEntries();
+    $("#browse")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  grid.querySelectorAll("[data-read-more]").forEach(button => {
+    button.addEventListener("click", () => openDetails(button.dataset.readMore));
+  });
+
+  grid.querySelectorAll("[data-copy-quote]").forEach(button => {
+    button.addEventListener("click", () => copyQuote(button.dataset.copyQuote));
+  });
 }
 
-function renderPagination(total, totalPages) {
-  const pagination = $("#pagination");
-  if (!pagination) return;
+function renderPagination(container, page, totalPages, onPageChange) {
+  if (!container) return;
 
-  if (total <= PAGE_SIZE) {
-    pagination.innerHTML = "";
+  if (totalPages <= 1) {
+    container.innerHTML = "";
     return;
   }
 
-  let html = `
-    <button type="button" data-page="${state.page - 1}" ${state.page === 1 ? "disabled" : ""}>
-      ${escapeHTML(t("previous"))}
-    </button>`;
+  const buttons = [];
 
-  for (let page = 1; page <= totalPages; page++) {
-    html += `
-      <button type="button" data-page="${page}" class="${page === state.page ? "active" : ""}" ${page === state.page ? 'aria-current="page"' : ""}>
-        ${page}
-      </button>`;
+  buttons.push(`
+    <button type="button" data-page="${page - 1}" ${page === 1 ? "disabled" : ""}>
+      ${escapeHTML(t("previous"))}
+    </button>
+  `);
+
+  for (let number = 1; number <= totalPages; number++) {
+    if (
+      totalPages > 7 &&
+      number !== 1 &&
+      number !== totalPages &&
+      Math.abs(number - page) > 1
+    ) {
+      if (number === 2 && page > 4) buttons.push("<span>…</span>");
+      if (number === totalPages - 1 && page < totalPages - 3) buttons.push("<span>…</span>");
+      continue;
+    }
+
+    buttons.push(`
+      <button type="button"
+              data-page="${number}"
+              class="${number === page ? "active" : ""}"
+              ${number === page ? 'aria-current="page"' : ""}>
+        ${number}
+      </button>
+    `);
   }
 
-  html += `
-    <button type="button" data-page="${state.page + 1}" ${state.page === totalPages ? "disabled" : ""}>
+  buttons.push(`
+    <button type="button" data-page="${page + 1}" ${page === totalPages ? "disabled" : ""}>
       ${escapeHTML(t("next"))}
-    </button>`;
+    </button>
+  `);
 
-  pagination.innerHTML = html;
+  container.innerHTML = buttons.join("");
+
+  container.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => {
+      const nextPage = Number(button.dataset.page);
+      if (nextPage >= 1 && nextPage <= totalPages) {
+        onPageChange(nextPage);
+      }
+    });
+  });
 }
 
-function openDetails(id) {
-  const item = DATA.find(entry => entry.id === id);
-  if (!item) return;
+/* -------------------- Story details dialog -------------------- */
 
+function openDetails(id) {
+  const entry = getEntry(id);
   const dialog = $("#detailDialog");
   const content = $("#detailContent");
-  if (!dialog || !content) return;
 
-  const heading = dialog.querySelector("#detailTitle");
-  if (heading) heading.textContent = item.title;
+  if (!entry || !dialog || !content) return;
+
+  const factsHTML = entry.facts?.length
+    ? `<h3>${currentLanguage === "am" ? "ዋና ነጥቦች" : "Key facts"}</h3>
+       <ul>${entry.facts.map(fact => `<li>${escapeHTML(fact)}</li>`).join("")}</ul>`
+    : "";
+
+  const metadata = [
+    entry.period,
+    entry.region,
+    entry.field
+  ].filter(Boolean);
 
   content.innerHTML = `
-    <div class="entry-meta">${escapeHTML(item.meta || "")}</div>
-    <p>${escapeHTML(item.summary || "")}</p>
-    ${(item.details || []).map(([headingText, paragraph]) => `
-      <h3>${escapeHTML(headingText)}</h3>
-      <p>${escapeHTML(paragraph)}</p>
-    `).join("")}
-    <p class="notice"><strong>${escapeHTML(t("details"))}:</strong> This entry is part of the starter dataset. Additional entries and source references will be added as the collection grows.</p>
+    <div class="detail-icon">${escapeHTML(entry.icon || "📜")}</div>
+    <h2 id="detailTitle">${escapeHTML(entry.name)}</h2>
+    ${metadata.length
+      ? `<p class="detail-meta">${metadata.map(escapeHTML).join(" · ")}</p>`
+      : ""}
+    <p>${escapeHTML(entry.details || entry.summary)}</p>
+    ${factsHTML}
+    ${entry.category === "quotes" ? `
+      <p class="detail-meta">${escapeHTML(t("author"))}: ${escapeHTML(entry.author || "Unknown")}</p>
+      <div class="entry-actions">
+        <button type="button" class="button button-primary" id="detailCopyQuote">
+          ${escapeHTML(t("copy"))}
+        </button>
+        <button type="button" class="button button-secondary" id="detailShareQuote">
+          ${escapeHTML(t("share"))}
+        </button>
+      </div>
+    ` : ""}
   `;
 
   if (typeof dialog.showModal === "function") {
@@ -985,270 +918,320 @@ function openDetails(id) {
   } else {
     dialog.setAttribute("open", "");
   }
+
+  $("#detailCopyQuote")?.addEventListener("click", () => copyQuote(id));
+  $("#detailShareQuote")?.addEventListener("click", () => shareQuote(id));
 }
 
-async function copyQuote(id) {
-  const item = DATA.find(entry => entry.id === id);
-  if (!item) return;
+function closeDetails() {
+  const dialog = $("#detailDialog");
+  if (!dialog) return;
 
-  const text = `"${getQuote(item)}" — ${item.title}`;
+  if (typeof dialog.close === "function" && dialog.open) {
+    dialog.close();
+  } else {
+    dialog.removeAttribute("open");
+  }
+}
 
+/* -------------------- Quote section -------------------- */
+
+function getVisibleQuotes() {
+  const search = normalizeText($("#quoteSearch")?.value || "");
+  const type = $("#quoteType")?.value || "all";
+
+  return entries.filter(entry => {
+    if (entry.category !== "quotes") return false;
+
+    const matchesType = type === "all" || entry.type === type;
+    const text = normalizeText([
+      entry.name,
+      entry.summary,
+      entry.details,
+      entry.author,
+      entry.type
+    ].join(" "));
+
+    return matchesType && text.includes(search);
+  });
+}
+
+function renderQuotes() {
+  const grid = $("#quoteCards");
+  const pagination = $("#quotePagination");
+
+  if (!grid) return;
+
+  const filtered = getVisibleQuotes();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+  currentQuotePage = Math.min(Math.max(currentQuotePage, 1), totalPages);
+
+  const start = (currentQuotePage - 1) * PAGE_SIZE;
+  const pageQuotes = filtered.slice(start, start + PAGE_SIZE);
+
+  if (!pageQuotes.length) {
+    grid.innerHTML = `<div class="empty-state">${escapeHTML(t("noResults"))}</div>`;
+  } else {
+    grid.innerHTML = pageQuotes.map(quote => `
+      <article class="quote-card">
+        <span class="quote-mark" aria-hidden="true">“</span>
+        <span class="quote-type">${escapeHTML(
+          quote.type === "funny" ? t("quoteFunny") : t("quoteMotivational")
+        )}</span>
+        <blockquote>${escapeHTML(quote.summary)}</blockquote>
+        <p class="quote-author">— ${escapeHTML(quote.author || "Unknown")}</p>
+        <div class="quote-actions">
+          <button type="button" data-copy-quote="${escapeHTML(quote.id)}">
+            ${escapeHTML(t("copy"))}
+          </button>
+          <button type="button" data-share-quote="${escapeHTML(quote.id)}">
+            ${escapeHTML(t("share"))}
+          </button>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  renderPagination(pagination, currentQuotePage, totalPages, page => {
+    currentQuotePage = page;
+    renderQuotes();
+  });
+
+  grid.querySelectorAll("[data-copy-quote]").forEach(button => {
+    button.addEventListener("click", () => copyQuote(button.dataset.copyQuote));
+  });
+
+  grid.querySelectorAll("[data-share-quote]").forEach(button => {
+    button.addEventListener("click", () => shareQuote(button.dataset.shareQuote));
+  });
+}
+
+/* -------------------- Copy and share -------------------- */
+
+function getQuoteText(entry) {
+  return `“${entry.summary}” — ${entry.author || "Unknown"}`;
+}
+
+async function copyText(text) {
   try {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
       showToast(t("copied"));
-    } else {
-      const temporary = document.createElement("textarea");
-      temporary.value = text;
-      temporary.style.position = "fixed";
-      temporary.style.opacity = "0";
-      document.body.appendChild(temporary);
-      temporary.select();
-      const copied = document.execCommand("copy");
-      temporary.remove();
-      showToast(copied ? t("copied") : t("copyFailed"));
+      return true;
     }
-  } catch {
-    showToast(t("copyFailed"));
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    const successful = document.execCommand("copy");
+    textarea.remove();
+
+    if (successful) {
+      showToast(t("copied"));
+      return true;
+    }
+  } catch (error) {
+    console.error("Copy failed:", error);
   }
+
+  showToast(t("copyFailed"));
+  return false;
+}
+
+function copyQuote(id) {
+  const entry = getEntry(id);
+  if (!entry || entry.category !== "quotes") return;
+  return copyText(getQuoteText(entry));
 }
 
 async function shareQuote(id) {
-  const item = DATA.find(entry => entry.id === id);
-  if (!item) return;
+  const entry = getEntry(id);
+  if (!entry || entry.category !== "quotes") return;
 
-  const text = `"${getQuote(item)}" — ${item.title}`;
+  const text = getQuoteText(entry);
 
   if (navigator.share) {
     try {
-      await navigator.share({ title: item.title, text });
+      await navigator.share({
+        title: entry.name,
+        text
+      });
     } catch (error) {
-      if (error?.name !== "AbortError") showToast(t("shareUnavailable"));
+      if (error?.name !== "AbortError") {
+        console.error("Share failed:", error);
+      }
     }
   } else {
-    await copyQuote(id);
+    await copyText(text);
     showToast(t("shareUnavailable"));
   }
 }
 
+/* -------------------- Language selector -------------------- */
+
 function applyLanguage(language) {
-  state.language = UI_TEXT[language] ? language : "en";
-  const isArabic = state.language === "ar";
+  currentLanguage = UI[language] ? language : "en";
 
-  document.documentElement.lang = state.language;
-  document.documentElement.dir = isArabic ? "rtl" : "ltr";
-  document.body.dir = isArabic ? "rtl" : "ltr";
+  document.documentElement.lang = currentLanguage;
 
-  const select = $("#languageSelect");
-  if (select && select.value !== state.language) select.value = state.language;
-
-  const dictionary = UI_TEXT[state.language];
-
-  $$("[data-i18n]").forEach(element => {
+  document.querySelectorAll("[data-i18n]").forEach(element => {
     const key = element.dataset.i18n;
-    if (dictionary[key] !== undefined) element.innerHTML = dictionary[key];
+    const value = t(key);
+
+    if (key === "heroTitle") {
+      element.innerHTML = value;
+    } else {
+      element.textContent = value;
+    }
   });
 
-  $$("[data-i18n-placeholder]").forEach(element => {
-    const key = element.dataset.i18nPlaceholder;
-    if (dictionary[key] !== undefined) element.setAttribute("placeholder", dictionary[key]);
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+    element.placeholder = t(element.dataset.i18nPlaceholder);
   });
-
-  $$("[data-i18n-label]").forEach(element => {
-    const key = element.dataset.i18nLabel;
-    if (dictionary[key] !== undefined) element.setAttribute("aria-label", dictionary[key]);
-  });
-
-  const categorySelect = $("#categoryFilter");
-  if (categorySelect) {
-    const previous = state.category;
-    categorySelect.innerHTML = `
-      <option value="all">${escapeHTML(t("allCategories"))}</option>
-      ${Object.keys(CATEGORY_INFO).map(key => `
-        <option value="${key}">${escapeHTML(categoryLabel(key))}</option>
-      `).join("")}`;
-    categorySelect.value = previous;
-  }
-
-  const sortSelect = $("#sortFilter");
-  if (sortSelect) {
-    const previous = state.sort;
-    sortSelect.innerHTML = `
-      <option value="newest">${escapeHTML(t("newest"))}</option>
-      <option value="alphabetical">${escapeHTML(t("alphabetical"))}</option>`;
-    sortSelect.value = previous;
-  }
 
   renderCollections();
-  renderCards();
-
-  const dialog = $("#detailDialog");
-  if (dialog?.open) {
-    const currentTitle = $("#detailTitle")?.textContent;
-    const currentItem = DATA.find(item => item.title === currentTitle);
-    if (currentItem) openDetails(currentItem.id);
-  }
-
-  try {
-    localStorage.setItem("kol-language", state.language);
-  } catch {
-    // Language still works if storage is unavailable.
-  }
+  renderEntries();
+  renderQuotes();
 }
 
-function init() {
-  const search = $("#searchInput");
-  const category = $("#categoryFilter");
-  const sort = $("#sortFilter");
-  const language = $("#languageSelect");
-  const grid = $("#entryGrid");
-  const pagination = $("#pagination");
-  const feedbackForm = $("#feedbackForm");
-  const dialog = $("#detailDialog");
-  const closeButton = $("#dialogClose");
+function initLanguage() {
+  const select = $("#languageSelect");
+  if (!select) return;
 
-  if (search) {
-    search.addEventListener("input", () => {
-      state.query = search.value.trim();
-      state.page = 1;
-      renderCards();
-    });
-  }
-
-  if (category) {
-    category.addEventListener("change", () => {
-      state.category = category.value;
-      state.page = 1;
-      renderCards();
-    });
-  }
-
-  if (sort) {
-    sort.addEventListener("change", () => {
-      state.sort = sort.value;
-      state.page = 1;
-      renderCards();
-    });
-  }
-
-  if (language) {
-    language.addEventListener("change", () => applyLanguage(language.value));
-  }
-
-  if (grid) {
-    grid.addEventListener("click", event => {
-      const readButton = event.target.closest("[data-read]");
-      const copyButton = event.target.closest("[data-copy]");
-      const shareButton = event.target.closest("[data-share]");
-
-      if (readButton) openDetails(readButton.dataset.read);
-      if (copyButton) copyQuote(copyButton.dataset.copy);
-      if (shareButton) shareQuote(shareButton.dataset.share);
-    });
-  }
-
-  if (pagination) {
-    pagination.addEventListener("click", event => {
-      const button = event.target.closest("[data-page]");
-      if (!button || button.disabled) return;
-
-      state.page = Number(button.dataset.page);
-      renderCards();
-
-      const browse = $("#browse");
-      if (browse) browse.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-
-  const collectionGrid = $("#collectionGrid");
-  if (collectionGrid) {
-    collectionGrid.addEventListener("click", event => {
-      const link = event.target.closest("[data-category-link]");
-      if (!link) return;
-
-      state.category = link.dataset.categoryLink;
-      state.page = 1;
-
-      const categorySelect = $("#categoryFilter");
-      if (categorySelect) categorySelect.value = state.category;
-
-      renderCards();
-
-      const browse = $("#browse");
-      if (browse) {
-        event.preventDefault();
-        history.replaceState(null, "", `#${link.dataset.categoryLink}`);
-        browse.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
-  }
-
-  if (closeButton && dialog) {
-    closeButton.addEventListener("click", () => {
-      if (typeof dialog.close === "function") dialog.close();
-      else dialog.removeAttribute("open");
-    });
-
-    dialog.addEventListener("click", event => {
-      if (event.target === dialog) {
-        if (typeof dialog.close === "function") dialog.close();
-        else dialog.removeAttribute("open");
-      }
-    });
-  }
-
-  if (feedbackForm) {
-    feedbackForm.addEventListener("submit", event => {
-      event.preventDefault();
-
-      const messageField = $("#feedbackMessage");
-      const status = $("#feedbackStatus");
-
-      if (!messageField || !status) return;
-
-      if (!messageField.value.trim()) {
-        status.textContent = t("requiredMessage");
-        status.style.color = "var(--danger)";
-        messageField.focus();
-        return;
-      }
-
-      status.textContent = t("feedbackSuccess");
-      status.style.color = "var(--success)";
-      feedbackForm.reset();
-    });
-  }
-
-  $$(".main-nav a").forEach(link => {
-    link.addEventListener("click", () => {
-      const target = document.querySelector(link.getAttribute("href"));
-      if (target) {
-        target.classList.add("navigation-highlight");
-        window.setTimeout(() => target.classList.remove("navigation-highlight"), 1200);
-      }
-    });
-  });
-
-  $("#year") && ($("#year").textContent = new Date().getFullYear());
+  let savedLanguage = "en";
 
   try {
-    const savedLanguage = localStorage.getItem("kol-language");
-    if (savedLanguage && UI_TEXT[savedLanguage]) {
-      state.language = savedLanguage;
-    }
-  } catch {
-    // Continue in English if storage is unavailable.
+    savedLanguage = localStorage.getItem("kingdomLanguage") || "en";
+  } catch (error) {
+    console.warn("Local storage is unavailable.");
   }
 
-  if ($("#languageSelect")) $("#languageSelect").value = state.language;
+  if (!UI[savedLanguage]) savedLanguage = "en";
+  select.value = savedLanguage;
+  applyLanguage(savedLanguage);
+
+  select.addEventListener("change", () => {
+    const language = UI[select.value] ? select.value : "en";
+
+    try {
+      localStorage.setItem("kingdomLanguage", language);
+    } catch (error) {
+      console.warn("Could not save language preference.");
+    }
+
+    applyLanguage(language);
+  });
+}
+
+/* -------------------- Feedback form -------------------- */
+
+function initFeedback() {
+  const form = $("#feedbackForm");
+  const message = $("#feedbackMessage");
+  const status = $("#feedbackStatus");
+
+  if (!form || !message || !status) return;
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (!message.value.trim()) {
+      status.textContent = t("feedbackRequired");
+      return;
+    }
+
+    status.textContent = `${t("feedbackSuccess")} ${t("demoWarning")}`;
+
+    /*
+      This is a front-end demo only.
+      Connect a backend or form service to actually receive feedback.
+    */
+    form.reset();
+  });
+}
+
+/* -------------------- Toast -------------------- */
+
+function showToast(message) {
+  const toast = $("#toast");
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  if (toastTimeout) clearTimeout(toastTimeout);
+
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2600);
+}
+
+/* -------------------- Event listeners and startup -------------------- */
+
+function init() {
+  const searchInput = $("#searchInput");
+  const categoryFilter = $("#categoryFilter");
+  const sortFilter = $("#sortFilter");
+  const quoteSearch = $("#quoteSearch");
+  const quoteType = $("#quoteType");
+  const closeButton = $("#dialogClose");
+  const dialog = $("#detailDialog");
+
+  searchInput?.addEventListener("input", () => {
+    currentPage = 1;
+    renderEntries();
+  });
+
+  categoryFilter?.addEventListener("change", () => {
+    currentPage = 1;
+    renderEntries();
+  });
+
+  sortFilter?.addEventListener("change", () => {
+    currentPage = 1;
+    renderEntries();
+  });
+
+  quoteSearch?.addEventListener("input", () => {
+    currentQuotePage = 1;
+    renderQuotes();
+  });
+
+  quoteType?.addEventListener("change", () => {
+    currentQuotePage = 1;
+    renderQuotes();
+  });
+
+  closeButton?.addEventListener("click", closeDetails);
+
+  dialog?.addEventListener("click", event => {
+    if (event.target === dialog) closeDetails();
+  });
+
+  const year = $("#year");
+  if (year) year.textContent = new Date().getFullYear();
+
+  initLanguage();
+  initFeedback();
 
   renderCollections();
-  applyLanguage(state.language);
-  renderCards();
+  renderEntries();
+  renderQuotes();
+
+  console.info(
+    `Kingdom of Legends loaded: ${entries.length} starter records. ` +
+    "The full 680-record collection has not yet been populated."
+  );
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
+  document.addEventListener("DOMContentLoaded", init, { once: true });
 } else {
   init();
 }
